@@ -14,7 +14,7 @@ import java.util.Vector;
 public class SftpConnection {
 
 
-    private final static Logger log = LoggerFactory.getLogger(SftpConnection.class);
+    private static final Logger log = LoggerFactory.getLogger(SftpConnection.class);
     private final JSch jsch;
     private Session session;
     private ChannelSftp sftpChannel;
@@ -38,10 +38,10 @@ public class SftpConnection {
             log.error("Failed to fix connection", e);
         }
         try {
-            Vector vector = sftpChannel.ls(EnvironmentConfig.nfsFilePath);
+            Vector vector = sftpChannel.ls(EnvironmentConfig.NFSFILEPATH);
             System.out.println(vector);
         } catch (SftpException e) {
-            e.printStackTrace();
+            log.error("Failed to fix connection", e);
         }
         return true;
     }

@@ -11,20 +11,17 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-
 
 public class Integrasjonskomponent
 {
-    private Server server;
-    private final static Logger log = LoggerFactory.getLogger(Integrasjonskomponent.class);
+    private static final Logger log = LoggerFactory.getLogger(Integrasjonskomponent.class);
 
-    public static void main( String[] args ) throws IOException {
-        new Integrasjonskomponent().start(args);
+    public static void main( String[] args ) {
+        new Integrasjonskomponent().start();
     }
 
-    private void start(String[] args) throws IOException {
-        server = new Server(8080);
+    private void start() {
+        Server server = new Server(8080);
         HandlerCollection handlerCollection = new HandlerCollection();
         ServletContextHandler prometheusServletHandler = new ServletContextHandler();
         prometheusServletHandler.setContextPath("/metrics");
@@ -40,7 +37,7 @@ public class Integrasjonskomponent
         }
 
         try {
-            SftpConnection connection = new SftpConnection(EnvironmentConfig.nfsusername, EnvironmentConfig.nfsHost, Integer.parseInt(EnvironmentConfig.nfsPort), EnvironmentConfig.nfsPassword);
+            SftpConnection connection = new SftpConnection(EnvironmentConfig.NFSUSERNAME, EnvironmentConfig.NFSHOST, Integer.parseInt(EnvironmentConfig.NFSPORT), EnvironmentConfig.NFSPASSWORD);
             connection.checkForNewFile();
         } catch (JSchException e) {
             log.error("JSchException: ", e);

@@ -1,24 +1,26 @@
 package no.nav.oko.betsys.agresso.integrasjonskomponent.config;
 
 public class EnvironmentConfig {
-    public static final String nfsusername;
-    public static final String nfsPassword;
-    public static final String nfsHost;
-    public static final String nfsPort;
-    public static final String nfsFilePath;
+    public static final String NFSUSERNAME;
+    public static final String NFSPASSWORD;
+    public static final String NFSHOST;
+    public static final String NFSPORT;
+    public static final String NFSFILEPATH;
 
 
     static {
-        nfsusername = getStringVariable("NFSUSERNAME");
-        nfsPassword = getStringVariable("NFSPASSWORD");
-        nfsHost = getStringVariable("NFSHOST");
-        nfsPort = getStringVariable("NFSPORT");
-        nfsFilePath = getStringVariable("NFSFILEPATH");
+        NFSUSERNAME = getStringVariable("NFSUSERNAME");
+        NFSPASSWORD = getStringVariable("NFSPASSWORD");
+        NFSHOST = getStringVariable("NFSHOST");
+        NFSPORT = getStringVariable("NFSPORT");
+        NFSFILEPATH = getStringVariable("NFSFILEPATH");
 
 
     }
 
-    public static String getStringVariable(String envVariable) {
+    private EnvironmentConfig(){}
+
+    private static String getStringVariable(String envVariable) {
         String var = System.getenv(envVariable);
         if (var == null)
             throw new RuntimeException("Missing environment variable: \"" + envVariable + "\"");
