@@ -1,6 +1,7 @@
 package no.nav.oko.betsys.agresso.integrasjonskomponent;
 
 import com.jcraft.jsch.JSchException;
+import io.prometheus.client.Counter;
 import io.prometheus.client.exporter.MetricsServlet;
 import no.nav.oko.betsys.agresso.integrasjonskomponent.config.EnvironmentConfig;
 import no.nav.oko.betsys.agresso.integrasjonskomponent.endpoint.SelfcheckHandler;
@@ -16,6 +17,9 @@ public class Integrasjonskomponent
 {
     private static final Logger log = LoggerFactory.getLogger(Integrasjonskomponent.class);
 
+    private static final Counter testCounter = Counter.build().name("test").help("tester").register();
+
+
     public static void main( String[] args ) {
         new Integrasjonskomponent().start();
     }
@@ -24,10 +28,12 @@ public class Integrasjonskomponent
         Server server = new Server(8080);
         HandlerCollection handlerCollection = new HandlerCollection();
         ServletContextHandler prometheusServletHandler = new ServletContextHandler();
-        prometheusServletHandler.setContextPath("/metrics");
+        prometheusServletHandler.setContextPath("/prometheus");
         prometheusServletHandler.addServlet(MetricsServlet.class, "/");
         handlerCollection.setHandlers(new Handler[] { prometheusServletHandler, new SelfcheckHandler() });
         server.setHandler(handlerCollection);
+        testCounter.inc();
+
 
         try {
             server.start();
@@ -37,6 +43,7 @@ public class Integrasjonskomponent
         }
 
         try {
+
             SftpConnection connection = new SftpConnection(EnvironmentConfig.NFSUSERNAME, EnvironmentConfig.NFSHOST, Integer.parseInt(EnvironmentConfig.NFSPORT), EnvironmentConfig.NFSPASSWORD);
             connection.checkForNewFile();
         } catch (JSchException e) {
