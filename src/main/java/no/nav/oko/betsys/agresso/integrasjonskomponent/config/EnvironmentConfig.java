@@ -6,6 +6,10 @@ public class EnvironmentConfig {
     public static final String NFSHOST;
     public static final String NFSPORT;
     public static final String NFSFILEPATH;
+    public static final String DFSUSERNAME;
+    public static final String DFSPASSWORD;
+    public static final String DFSDOMAIN;
+
 
 
     static {
@@ -14,8 +18,9 @@ public class EnvironmentConfig {
         NFSHOST = getStringVariable("NFSHOST");
         NFSPORT = getStringVariable("NFSPORT");
         NFSFILEPATH = getStringVariable("NFSFILEPATH");
-
-
+        DFSUSERNAME = getStringVariable("DFSUSERNAME");
+        DFSPASSWORD = getStringVariable("DFSPASSWORD");
+        DFSDOMAIN = getStringVariable("DFSDOMAIN");
     }
 
     private EnvironmentConfig(){}

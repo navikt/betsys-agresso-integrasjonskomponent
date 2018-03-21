@@ -3,6 +3,9 @@ package no.nav.oko.betsys.agresso.integrasjonskomponent;
 import com.jcraft.jsch.JSchException;
 import io.prometheus.client.Counter;
 import io.prometheus.client.exporter.MetricsServlet;
+import jcifs.smb.NtlmPasswordAuthentication;
+import jcifs.smb.SmbException;
+import jcifs.smb.SmbFile;
 import no.nav.oko.betsys.agresso.integrasjonskomponent.config.EnvironmentConfig;
 import no.nav.oko.betsys.agresso.integrasjonskomponent.endpoint.SelfcheckHandler;
 import org.eclipse.jetty.server.Handler;
@@ -11,6 +14,8 @@ import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.MalformedURLException;
 
 
 public class Integrasjonskomponent
@@ -41,13 +46,26 @@ public class Integrasjonskomponent
             log.error("Failed to start Server:", e);
             System.exit(1);
         }
+//
+//        try {
+//
+//            SftpConnection connection = new SftpConnection(EnvironmentConfig.NFSUSERNAME, EnvironmentConfig.NFSHOST, Integer.parseInt(EnvironmentConfig.NFSPORT), EnvironmentConfig.NFSPASSWORD);
+//            connection.checkForNewFile();
+//        } catch (JSchException e) {
+//            log.error("JSchException: ", e);
+//        }
+
+        NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(null,EnvironmentConfig.DFSUSERNAME,EnvironmentConfig.DFSPASSWORD);
 
         try {
+            SmbFile[] file = new SmbFile(EnvironmentConfig.DFSDOMAIN, auth).listFiles();
+            System.out.println(file);
 
-            SftpConnection connection = new SftpConnection(EnvironmentConfig.NFSUSERNAME, EnvironmentConfig.NFSHOST, Integer.parseInt(EnvironmentConfig.NFSPORT), EnvironmentConfig.NFSPASSWORD);
-            connection.checkForNewFile();
-        } catch (JSchException e) {
-            log.error("JSchException: ", e);
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (SmbException e) {
+            e.printStackTrace();
         }
 
     }

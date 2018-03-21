@@ -1,4 +1,4 @@
-image: "docker.adeo.no:5000/okonomi/integrasjonskomponenten"
+image: "docker.adeo.no:5000/okonomi/betsys-agresso-integrasjonskomponent"
 replicas:
   min: 1
   max: 4
@@ -31,20 +31,12 @@ resources:
     memory: 256Mi
 fasitResources:
   used:
-  - alias: nfstest
+  - alias: SrvBetsysAgresso
     resourceType: credential
     propertyMap:
       username: NFSUSERNAME
       password: NFSPASSWORD
-  - alias: nais_nfs_share_host
+  - alias: agresso_share_bank_export
     resourceType: baseUrl
     propertyMap:
-      url: NFSHOST
-  - alias: nais_nfs_share_path
-    resourceType: baseUrl
-    propertyMap:
-      url: NFSFILEPATH
-  - alias: nais_nfs_share_port
-    resourceType: baseUrl
-    propertyMap:
-      url: NFSPORT
+      url: DFSDOMAIN
