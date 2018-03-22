@@ -1,11 +1,11 @@
 package no.nav.oko.betsys.agresso.integrasjonskomponent.config;
 
 public class EnvironmentConfig {
-    public static final String NFSUSERNAME;
-    public static final String NFSPASSWORD;
-    public static final String NFSHOST;
-    public static final String NFSPORT;
-    public static final String NFSFILEPATH;
+    //public static final String NFSUSERNAME;
+    //public static final String NFSPASSWORD;
+    //public static final String NFSHOST;
+    //public static final String NFSPORT;
+    //public static final String NFSFILEPATH;
     public static final String DFSUSERNAME;
     public static final String DFSPASSWORD;
     public static final String DFSDOMAIN;
