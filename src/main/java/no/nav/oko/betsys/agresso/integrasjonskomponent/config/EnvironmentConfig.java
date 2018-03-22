@@ -13,11 +13,11 @@ public class EnvironmentConfig {
 
 
     static {
-        NFSUSERNAME = getStringVariable("NFSUSERNAME");
-        NFSPASSWORD = getStringVariable("NFSPASSWORD");
-        NFSHOST = getStringVariable("NFSHOST");
-        NFSPORT = getStringVariable("NFSPORT");
-        NFSFILEPATH = getStringVariable("NFSFILEPATH");
+        //NFSUSERNAME = getStringVariable("NFSUSERNAME");
+        //NFSPASSWORD = getStringVariable("NFSPASSWORD");
+        //NFSHOST = getStringVariable("NFSHOST");
+        //NFSPORT = getStringVariable("NFSPORT");
+        //NFSFILEPATH = getStringVariable("NFSFILEPATH");
         DFSUSERNAME = getStringVariable("DFSUSERNAME");
         DFSPASSWORD = getStringVariable("DFSPASSWORD");
         DFSDOMAIN = getStringVariable("DFSDOMAIN");
