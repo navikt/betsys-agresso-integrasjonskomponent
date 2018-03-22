@@ -34,8 +34,8 @@ fasitResources:
   - alias: SrvBetsysAgresso
     resourceType: credential
     propertyMap:
-      username: NFSUSERNAME
-      password: NFSPASSWORD
+      username: DFSUSERNAME
+      password: DFSPASSWORD
   - alias: agresso_share_bank_export
     resourceType: baseUrl
     propertyMap:
