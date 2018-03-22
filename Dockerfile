@@ -1,2 +1,2 @@
 FROM navikt/java:8
-COPY targetbetsys-agresso-integrasjonskomponent*.jar /app/app.jar
+COPY target/betsys-agresso-integrasjonskomponent*.jar /app/app.jar
