@@ -31,18 +31,18 @@ public class SftpConnection {
     }
 
     public boolean checkForNewFile(){
-
-        try {
-            fixConection();
-        } catch (JSchException e) {
-            log.error("Failed to fix connection", e);
-        }
-        try {
-            Vector vector = sftpChannel.ls(EnvironmentConfig.NFSFILEPATH);
-            System.out.println(vector);
-        } catch (SftpException e) {
-            log.error("Failed to fix connection", e);
-        }
+//
+//        try {
+//            fixConection();
+//        } catch (JSchException e) {
+//            log.error("Failed to fix connection", e);
+//        }
+//        try {
+//            Vector vector = sftpChannel.ls(EnvironmentConfig.NFSFILEPATH);
+//            System.out.println(vector);
+//        } catch (SftpException e) {
+//            log.error("Failed to fix connection", e);
+//        }
         return true;
     }
 
