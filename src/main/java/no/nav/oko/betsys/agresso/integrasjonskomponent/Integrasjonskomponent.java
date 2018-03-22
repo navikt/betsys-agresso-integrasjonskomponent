@@ -58,9 +58,10 @@ public class Integrasjonskomponent
         NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(null,EnvironmentConfig.DFSUSERNAME,EnvironmentConfig.DFSPASSWORD);
 
         try {
+            log.info("Trying to contact DFS share");
             SmbFile[] file = new SmbFile(EnvironmentConfig.DFSDOMAIN, auth).listFiles();
-            System.out.println(file);
 
+            log.info("Sucessfully retrieved files list",String.valueOf(file));
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
