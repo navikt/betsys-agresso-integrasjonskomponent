@@ -19,7 +19,7 @@ public class LesFilFraAgressoRoute extends RouteBuilder {
         // sftp://[username@]hostname[:port]/directoryname[?options]
 
         CronScheduledRoutePolicy startPolicy = new CronScheduledRoutePolicy();
-        startPolicy.setRouteStartTime("10 * * * * ? *");
+        startPolicy.setRouteStartTime("*/30 * * * * ? *");
 
         String sftpPath = getFtpPath("filmottak.preprod.local", EnvironmentConfig.SFTPUSERNAME, EnvironmentConfig.SFTPPASSWORD);
 
