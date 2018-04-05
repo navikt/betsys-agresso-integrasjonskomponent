@@ -6,6 +6,8 @@ import org.apache.camel.routepolicy.quartz.SimpleScheduledRoutePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Date;
+
 public class LesFilFraAgressoRoute extends RouteBuilder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LesFilFraAgressoRoute.class);
@@ -13,17 +15,14 @@ public class LesFilFraAgressoRoute extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
-        SimpleScheduledRoutePolicy policy = new SimpleScheduledRoutePolicy();
-        policy.setRouteStartRepeatInterval(15000); //TODO: Variabel man kan endre i fasit?
-
         // sftp://[username@]hostname[:port]/directoryname[?options]
 
         String sftpPath = getFtpPath("filmottak.preprod.local", EnvironmentConfig.SFTPUSERNAME, EnvironmentConfig.SFTPPASSWORD);
 
         LOGGER.info("Setter opp Camel-route");
+        LOGGER.info(sftpPath);
 
         from(sftpPath)
-                .routePolicy(policy)
                 // Kopier til betsys
                 // Send SBDH på kø
                 // Flytt samme fil til arkiv-mappen på FTP-server
@@ -39,6 +38,6 @@ public class LesFilFraAgressoRoute extends RouteBuilder {
                 type +
                 "/inbound" +
                 "?password=" +
-                password;
+                password + "&scheduler://name?delay=15000";
     }
 }
