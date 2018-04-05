@@ -2,6 +2,7 @@ package no.nav.oko.betsys.agresso.integrasjonskomponent;
 
 import no.nav.oko.betsys.agresso.integrasjonskomponent.config.EnvironmentConfig;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.routepolicy.quartz.CronScheduledRoutePolicy;
 import org.apache.camel.routepolicy.quartz.SimpleScheduledRoutePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,12 +18,17 @@ public class LesFilFraAgressoRoute extends RouteBuilder {
 
         // sftp://[username@]hostname[:port]/directoryname[?options]
 
+        CronScheduledRoutePolicy startPolicy = new CronScheduledRoutePolicy();
+        startPolicy.setRouteStartTime("10 * * * * ? *");
+
         String sftpPath = getFtpPath("filmottak.preprod.local", EnvironmentConfig.SFTPUSERNAME, EnvironmentConfig.SFTPPASSWORD);
 
         LOGGER.info("Setter opp Camel-route");
         LOGGER.info(sftpPath);
 
         from(sftpPath)
+                .routePolicy(startPolicy)
+                .noAutoStartup()
                 // Kopier til betsys
                 // Send SBDH på kø
                 // Flytt samme fil til arkiv-mappen på FTP-server
@@ -38,6 +44,6 @@ public class LesFilFraAgressoRoute extends RouteBuilder {
                 type +
                 "/inbound" +
                 "?password=" +
-                password + "&scheduler://name?delay=15000";
+                password;
     }
 }
