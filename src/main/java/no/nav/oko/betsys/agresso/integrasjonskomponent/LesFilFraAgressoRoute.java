@@ -35,7 +35,8 @@ public class LesFilFraAgressoRoute extends RouteBuilder {
                 // Flytt samme fil til arkiv-mappen på FTP-server
                 // Hvor ofte skal man polle FTP-serveren?
                 // Hvor lenge skal man vente fra man poller til man leser filene?
-                .log("Lest fil med navn: ${header.CamelFileNameOnly}");
+                .log("Lest fil med navn: ${header.CamelFileNameOnly}")
+                .log("Body: ${body}");
     }
 
     private String getFtpPath(String type, String username, String password) {
