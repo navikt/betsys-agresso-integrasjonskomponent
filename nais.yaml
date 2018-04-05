@@ -40,3 +40,12 @@ fasitResources:
     resourceType: baseUrl
     propertyMap:
       url: DFSDOMAIN
+  - alias: Agresso_sftp_server
+    resourceType: baseUrl
+    propertyMap:
+      url: SFTPSERVERURL
+  - alias: Agresso_sftp_user
+    resourceType: credential
+    propertyMap:
+      username: SFTPUSERNAME
+      password: SFTPPASSWORD

@@ -9,6 +9,9 @@ public class EnvironmentConfig {
     public static final String DFSUSERNAME;
     public static final String DFSPASSWORD;
     public static final String DFSDOMAIN;
+    public static final String SFTPSERVERURL;
+    public static final String SFTPUSERNAME;
+    public static final String SFTPPASSWORD;
 
 
 
@@ -21,6 +24,9 @@ public class EnvironmentConfig {
         DFSUSERNAME = getStringVariable("DFSUSERNAME");
         DFSPASSWORD = getStringVariable("DFSPASSWORD");
         DFSDOMAIN = getStringVariable("DFSDOMAIN");
+        SFTPSERVERURL = getStringVariable("SFTPSERVERURL");
+        SFTPUSERNAME = getStringVariable("SFTPUSERNAME");
+        SFTPPASSWORD = getStringVariable("SFTPPASSWORD");
     }
 
     private EnvironmentConfig(){}
