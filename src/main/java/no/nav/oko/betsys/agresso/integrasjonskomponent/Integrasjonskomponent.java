@@ -58,20 +58,20 @@ public class Integrasjonskomponent {
 //            log.error("JSchException: ", e);
 //        }
 
-        NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(null, EnvironmentConfig.DFSUSERNAME, EnvironmentConfig.DFSPASSWORD);
-
-        try {
-            log.info("Trying to contact DFS share");
-            SmbFile[] file = new SmbFile(EnvironmentConfig.DFSDOMAIN, auth).listFiles();
-
-            log.info("Sucessfully retrieved files list", String.valueOf(file));
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (SmbException e) {
-            e.printStackTrace();
-        }
-
+//        NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(null, EnvironmentConfig.DFSUSERNAME, EnvironmentConfig.DFSPASSWORD);
+//
+//        try {
+//            log.info("Trying to contact DFS share");
+//            SmbFile[] file = new SmbFile(EnvironmentConfig.DFSDOMAIN, auth).listFiles();
+//
+//            log.info("Sucessfully retrieved files list", String.valueOf(file));
+//
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        } catch (SmbException e) {
+//            e.printStackTrace();
+//        }
+//
     }
 
 }
