@@ -16,20 +16,12 @@ public class LesFilFraAgressoRoute extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
-        // sftp://[username@]hostname[:port]/directoryname[?options]
-
-//        CronScheduledRoutePolicy startPolicy = new CronScheduledRoutePolicy();
-//        startPolicy.setRouteStartTime("*/30 * * * * ? *");
-//        startPolicy.setRoute
-
         String sftpPath = getFtpPath("filmottak.preprod.local", EnvironmentConfig.SFTPUSERNAME, EnvironmentConfig.SFTPPASSWORD);
 
         LOGGER.info("Setter opp Camel-route");
         LOGGER.info(sftpPath);
 
         from(sftpPath)
-//                .routePolicy(startPolicy)
-//                .noAutoStartup()
                 // Kopier til betsys
                 // Send SBDH på kø
                 // Flytt samme fil til arkiv-mappen på FTP-server
@@ -46,6 +38,6 @@ public class LesFilFraAgressoRoute extends RouteBuilder {
                 type +
                 "/inbound" +
                 "?password=" +
-                password + "&delay=15000";
+                password + "&delay=15000&download=false";
     }
 }
