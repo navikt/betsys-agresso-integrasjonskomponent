@@ -18,8 +18,9 @@ public class LesFilFraAgressoRoute extends RouteBuilder {
 
         // sftp://[username@]hostname[:port]/directoryname[?options]
 
-        CronScheduledRoutePolicy startPolicy = new CronScheduledRoutePolicy();
-        startPolicy.setRouteStartTime("*/30 * * * * ? *");
+//        CronScheduledRoutePolicy startPolicy = new CronScheduledRoutePolicy();
+//        startPolicy.setRouteStartTime("*/30 * * * * ? *");
+//        startPolicy.setRoute
 
         String sftpPath = getFtpPath("filmottak.preprod.local", EnvironmentConfig.SFTPUSERNAME, EnvironmentConfig.SFTPPASSWORD);
 
@@ -27,8 +28,8 @@ public class LesFilFraAgressoRoute extends RouteBuilder {
         LOGGER.info(sftpPath);
 
         from(sftpPath)
-                .routePolicy(startPolicy)
-                .noAutoStartup()
+//                .routePolicy(startPolicy)
+//                .noAutoStartup()
                 // Kopier til betsys
                 // Send SBDH på kø
                 // Flytt samme fil til arkiv-mappen på FTP-server
@@ -44,6 +45,6 @@ public class LesFilFraAgressoRoute extends RouteBuilder {
                 type +
                 "/inbound" +
                 "?password=" +
-                password;
+                password + "&delay=15000";
     }
 }
