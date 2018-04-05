@@ -28,7 +28,12 @@ public class LesFilFraAgressoRoute extends RouteBuilder {
                 // Hvor ofte skal man polle FTP-serveren?
                 // Hvor lenge skal man vente fra man poller til man leser filene?
                 .log("Lest fil med navn: ${header.CamelFileNameOnly}")
-                .log("Body: ${body}");
+                .log("Body: ${body}")
+                .to("direct:behandle");
+
+        from("direct:behandle")
+                .from(sftpPath)
+                .log("Lest direct fil med navn: ${header.CamelFileNameOnly}");
     }
 
     private String getFtpPath(String type, String username, String password) {
