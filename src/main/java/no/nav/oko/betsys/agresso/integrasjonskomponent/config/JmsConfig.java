@@ -27,7 +27,7 @@ public class JmsConfig {
     }
 
     @Bean
-    public Queue betsysUtQueue(@Value("${BETSYS_SENDING_TIL_BANK_QUEUENAME}") String betsysUtQueue) throws JMSException {
+    public Queue betsysUtQueue(@Value("${SENDING_TIL_BANK_QUEUE}") String betsysUtQueue) throws JMSException {
         return new MQQueue(betsysUtQueue);
     }
 

@@ -40,11 +40,13 @@ fasitResources:
   - alias: betsys_SENDING_TIL_AGRESSO
     resourceType: queue
     propertyMap:
-      name: SENDING_TIL_AGRESSO_QUEUE
+      queueName: SENDING_TIL_AGRESSO_QUEUE
   - alias: betsys_SENDING_TIL_AGRESSOVL
     resourceType: queue
   - alias: betsys_SENDING_TIL_BANK
     resourceType: queue
+    propertyMap:
+      queueName: SENDING_TIL_BANK_QUEUE
   - alias: Agresso_sftp_server
     resourceType: baseUrl
     propertyMap:
