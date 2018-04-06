@@ -9,7 +9,7 @@ public class LesFilFraAgressoRoute extends RouteBuilder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LesFilFraAgressoRoute.class);
 
-    private static final String SFTP_OPTIONS = "&delay=60000&readLock=changed&readLockMinAge=600000&move=Arkiv";
+    private static final String SFTP_OPTIONS = "&delay=60000&readLock=changed&readLockMinAge=60000";
 
     @Override
     public void configure() throws Exception {
