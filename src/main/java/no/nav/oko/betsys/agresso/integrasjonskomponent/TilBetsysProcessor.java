@@ -13,6 +13,7 @@ public class TilBetsysProcessor implements Processor {
     public void process(Exchange exchange) throws Exception {
 
         LOGGER.info("Flytter fil til NFS og sender SBDH påkø");
+        LOGGER.info("Body: ${body}");
 
     }
 }

@@ -9,8 +9,10 @@ public class LesFilFraAgressoRoute extends RouteBuilder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LesFilFraAgressoRoute.class);
 
-    private static final String SFTP_OPTIONS = "&delay=60000&readLock=changed&readLockMinAge=60000&streamDownload=true&move=Arkiv";
+    private static final String SFTP_OPTIONS = "&delay=60000&streamDownload=true&move=Arkiv";
 
+    //readLock=changed&readLockMinAge=60000 Hvis vi skal bruke dette må vi vente på ny versjon av camel-ftp
+    // da dette skaper en bug som blir rettet i versjon 2.21.1
     @Override
     public void configure() throws Exception {
         String sftpPath = getSftpPathWithReadLock("filmottak.preprod.local", EnvironmentConfig.SFTPUSERNAME, EnvironmentConfig.SFTPPASSWORD);
@@ -25,8 +27,8 @@ public class LesFilFraAgressoRoute extends RouteBuilder {
                 // Hvor ofte skal man polle FTP-serveren?
                 // Hvor lenge skal man vente fra man poller til man leser filene?
                 .log("Lest fil med navn: ${header.CamelFileNameOnly}")
-                .log("Body: ${body}");
-//                .process(new TilBetsysProcessor());
+                .log("Body: ${body}")
+                .process(new TilBetsysProcessor());
     }
 
 
