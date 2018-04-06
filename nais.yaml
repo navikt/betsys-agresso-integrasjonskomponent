@@ -39,6 +39,8 @@ fasitResources:
     resourceType: channel
   - alias: betsys_SENDING_TIL_AGRESSO
     resourceType: queue
+    propertyMap:
+      queuename: SENDING_TIL_AGRESSO_QUEUE
   - alias: betsys_SENDING_TIL_AGRESSOVL
     resourceType: queue
   - alias: betsys_SENDING_TIL_BANK

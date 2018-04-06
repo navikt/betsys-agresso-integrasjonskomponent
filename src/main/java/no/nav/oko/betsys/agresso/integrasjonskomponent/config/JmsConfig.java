@@ -22,7 +22,7 @@ public class JmsConfig {
     private String channelName;
 
     @Bean
-    public Queue betsysInnQueue(@Value("${BETSYS_SENDING_TIL_AGRESSO_QUEUENAME}") String betsysInnQueue) throws JMSException {
+    public Queue betsysInnQueue(@Value("${SENDING_TIL_AGRESSO_QUEUE}") String betsysInnQueue) throws JMSException {
         return new MQQueue(betsysInnQueue);
     }
 
