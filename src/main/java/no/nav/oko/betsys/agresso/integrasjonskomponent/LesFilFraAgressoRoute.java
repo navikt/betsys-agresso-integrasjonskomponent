@@ -9,7 +9,7 @@ public class LesFilFraAgressoRoute extends RouteBuilder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LesFilFraAgressoRoute.class);
 
-    private static final String SFTP_OPTIONS = "&delay=15000&readLock=changed&readLockMinAge=600000&move=Arkiv";
+    private static final String SFTP_OPTIONS = "&delay=60000&readLock=changed&readLockMinAge=600000&move=Arkiv";
 
     @Override
     public void configure() throws Exception {
@@ -25,8 +25,8 @@ public class LesFilFraAgressoRoute extends RouteBuilder {
                 // Hvor ofte skal man polle FTP-serveren?
                 // Hvor lenge skal man vente fra man poller til man leser filene?
                 .log("Lest fil med navn: ${header.CamelFileNameOnly}")
-                .log("Body: ${body}")
-                .process(new TilBetsysProcessor());
+                .log("Body: ${body}");
+//                .process(new TilBetsysProcessor());
     }
 
 
