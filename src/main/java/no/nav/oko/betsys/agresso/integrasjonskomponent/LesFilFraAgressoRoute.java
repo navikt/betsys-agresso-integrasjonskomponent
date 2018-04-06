@@ -2,21 +2,18 @@ package no.nav.oko.betsys.agresso.integrasjonskomponent;
 
 import no.nav.oko.betsys.agresso.integrasjonskomponent.config.EnvironmentConfig;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.routepolicy.quartz.CronScheduledRoutePolicy;
-import org.apache.camel.routepolicy.quartz.SimpleScheduledRoutePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Date;
 
 public class LesFilFraAgressoRoute extends RouteBuilder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LesFilFraAgressoRoute.class);
 
+    private static final String SFTP_OPTIONS = "&delay=15000&readLock=changed&readLockMinAge=600000&move=Arkiv";
+
     @Override
     public void configure() throws Exception {
-
-        String sftpPath = getFtpPath("filmottak.preprod.local", EnvironmentConfig.SFTPUSERNAME, EnvironmentConfig.SFTPPASSWORD);
+        String sftpPath = getSftpPathWithReadLock("filmottak.preprod.local", EnvironmentConfig.SFTPUSERNAME, EnvironmentConfig.SFTPPASSWORD);
 
         LOGGER.info("Setter opp Camel-route");
         LOGGER.info(sftpPath);
@@ -29,20 +26,18 @@ public class LesFilFraAgressoRoute extends RouteBuilder {
                 // Hvor lenge skal man vente fra man poller til man leser filene?
                 .log("Lest fil med navn: ${header.CamelFileNameOnly}")
                 .log("Body: ${body}")
-                .to("direct:behandle");
-
-        from("direct:behandle")
-                .from(sftpPath)
-                .log("Lest direct fil med navn: ${header.CamelFileNameOnly}");
+                .process(new TilBetsysProcessor());
     }
 
-    private String getFtpPath(String type, String username, String password) {
+
+    private String getSftpPathWithReadLock(String url, String username, String password) {
         return "sftp://" +
                 username +
                 "@" +
-                type +
+                url +
                 "/inbound" +
                 "?password=" +
-                password + "&delay=15000&download=false";
+                password +
+                SFTP_OPTIONS;
     }
 }
