@@ -6,8 +6,6 @@ import com.ibm.msg.client.wmq.WMQConstants;
 import com.ibm.msg.client.wmq.v6.base.internal.MQC;
 import org.apache.camel.component.jms.JmsConfiguration;
 import org.apache.camel.component.jms.JmsEndpoint;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,8 +17,6 @@ import javax.jms.Queue;
 
 @Configuration
 public class JmsConfig {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(JmsConfig.class);
 
     @Value("${CHANNELNAME}")
     private String channelName;
@@ -36,16 +32,22 @@ public class JmsConfig {
     }
 
     @Bean("betsysInn")
-    public JmsEndpoint betsysInnEndpoint(Queue betsysInnQueue, ConnectionFactory connectionFactory) throws JMSException {
+    public JmsEndpoint betsysInnEndpoint(Queue betsysInnQueue,
+                                         ConnectionFactory connectionFactory,
+                                         JmsConfiguration jmsConfiguration) throws JMSException {
         JmsEndpoint jmsEndpoint = JmsEndpoint.newInstance(betsysInnQueue);
-        jmsEndpoint.setConnectionFactory(connectionFactory);
+//        jmsEndpoint.setConnectionFactory(connectionFactory);
+        jmsEndpoint.setConfiguration(jmsConfiguration);
         return jmsEndpoint;
     }
 
     @Bean("betsysUt")
-    public JmsEndpoint betsysUtEndpoint(Queue betsysUtQueue, ConnectionFactory connectionFactory) throws JMSException {
+    public JmsEndpoint betsysUtEndpoint(Queue betsysUtQueue,
+                                        ConnectionFactory connectionFactory,
+                                        JmsConfiguration jmsConfiguration) throws JMSException {
         JmsEndpoint jmsEndpoint = JmsEndpoint.newInstance(betsysUtQueue);
-        jmsEndpoint.setConnectionFactory(connectionFactory);
+//        jmsEndpoint.setConnectionFactory(connectionFactory);
+        jmsEndpoint.setConfiguration(jmsConfiguration);
         return jmsEndpoint;
     }
 
