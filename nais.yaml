@@ -31,15 +31,18 @@ resources:
     memory: 256Mi
 fasitResources:
   used:
-  - alias: SrvBetsysAgresso
-    resourceType: credential
+  - alias: mqGateway01
+    resourceType: queueManager
+  - alias: betsys-agresso-integrasjonskomponent_channel
     propertyMap:
-      username: DFSUSERNAME
-      password: DFSPASSWORD
-  - alias: agresso_share_bank_export
-    resourceType: baseUrl
-    propertyMap:
-      url: DFSDOMAIN
+      name: CHANNELNAME
+    resourceType: channel
+  - alias: betsys_SENDING_TIL_AGRESSO
+    resourceType: queue
+  - alias: betsys_SENDING_TIL_AGRESSOVL
+    resourceType: queue
+  - alias: betsys_SENDING_TIL_BANK
+    resourceType: queue
   - alias: Agresso_sftp_server
     resourceType: baseUrl
     propertyMap:

@@ -1,10 +1,13 @@
 package no.nav.oko.betsys.agresso.integrasjonskomponent;
 
-import no.nav.oko.betsys.agresso.integrasjonskomponent.config.EnvironmentConfig;
 import org.apache.camel.builder.RouteBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
+@Service
 public class LesFilFraAgressoRoute extends RouteBuilder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LesFilFraAgressoRoute.class);
@@ -13,9 +16,26 @@ public class LesFilFraAgressoRoute extends RouteBuilder {
 
     //readLock=changed&readLockMinAge=60000 Hvis vi skal bruke dette må vi vente på ny versjon av camel-ftp
     // da dette skaper en bug som blir rettet i versjon 2.21.1
+
+    @Value("${SFTPUSERNAME}")
+    private String sftpUsername;
+
+    @Value("${SFTPPASSWORD}")
+    private String sftpPassword;
+
+    @Value("${SFTPSERVERURL}")
+    private String sftpUrl;
+
+    private TilBetsysProcessor tilBetsysProcessor;
+
+    @Autowired
+    public LesFilFraAgressoRoute(TilBetsysProcessor tilBetsysProcessor) {
+        this.tilBetsysProcessor = tilBetsysProcessor;
+    }
+
     @Override
     public void configure() throws Exception {
-        String sftpPath = getSftpPathWithReadLock("filmottak.preprod.local", EnvironmentConfig.SFTPUSERNAME, EnvironmentConfig.SFTPPASSWORD);
+        String sftpPath = getSftpPathWithReadLock(sftpUrl, sftpUsername, sftpPassword);
 
         LOGGER.info("Setter opp Camel-route");
         LOGGER.info(sftpPath);
@@ -28,7 +48,8 @@ public class LesFilFraAgressoRoute extends RouteBuilder {
                 // Hvor lenge skal man vente fra man poller til man leser filene?
                 .log("Lest fil med navn: ${header.CamelFileNameOnly}")
                 .log("Body: ${body}")
-                .process(new TilBetsysProcessor());
+                .process(tilBetsysProcessor);
+        //to("betsys-kø");
     }
 
 

@@ -4,7 +4,9 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TilBetsysProcessor implements Processor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TilBetsysProcessor.class);
@@ -13,7 +15,10 @@ public class TilBetsysProcessor implements Processor {
     public void process(Exchange exchange) throws Exception {
 
         LOGGER.info("Flytter fil til NFS og sender SBDH påkø");
-        LOGGER.info("Body: ${body}");
+        LOGGER.info(exchange.getIn().getBody().toString());
 
+        // Legg fil på NFS share til betsys
+        // Generer SBDH
+        // Legg på kø til betsys
     }
 }
