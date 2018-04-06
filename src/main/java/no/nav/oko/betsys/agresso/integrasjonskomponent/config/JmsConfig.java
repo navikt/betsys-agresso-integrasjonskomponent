@@ -27,9 +27,6 @@ public class JmsConfig {
 
     @Bean
     public Queue betsysInnQueue(@Value("${SENDING_TIL_AGRESSO_QUEUE}") String betsysInnQueue) throws JMSException {
-        String test = System.getProperty("SENDING_TIL_AGRESSO_QUEUE");
-        LOGGER.info("test: " + test);
-        LOGGER.info("value: " + betsysInnQueue);
         return new MQQueue(betsysInnQueue);
     }
 

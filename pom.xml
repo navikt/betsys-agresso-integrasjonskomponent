@@ -86,8 +86,20 @@
         <!--</dependency>-->
         <dependency>
             <groupId>com.ibm</groupId>
+            <artifactId>com.ibm.mq</artifactId>
+            <version>${wmq.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm</groupId>
             <artifactId>com.ibm.mqjms</artifactId>
             <version>${wmq.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm</groupId>
+            <artifactId>dhbcore</artifactId>
+            <version>${wmq.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>com.ibm.mq</groupId>
