@@ -6,6 +6,8 @@ import com.ibm.msg.client.wmq.WMQConstants;
 import com.ibm.msg.client.wmq.v6.base.internal.MQC;
 import org.apache.camel.component.jms.JmsConfiguration;
 import org.apache.camel.component.jms.JmsEndpoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,11 +20,16 @@ import javax.jms.Queue;
 @Configuration
 public class JmsConfig {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(JmsConfig.class);
+
     @Value("${CHANNELNAME}")
     private String channelName;
 
     @Bean
     public Queue betsysInnQueue(@Value("${SENDING_TIL_AGRESSO_QUEUE}") String betsysInnQueue) throws JMSException {
+        String test = System.getProperty("SENDING_TIL_AGRESSO_QUEUE");
+        LOGGER.info(test);
+        LOGGER.info(betsysInnQueue);
         return new MQQueue(betsysInnQueue);
     }
 
