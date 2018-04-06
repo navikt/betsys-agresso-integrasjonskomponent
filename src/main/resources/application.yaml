@@ -1,0 +1,13 @@
+applicationName: '@project.artifactId@'
+applicationVersion: '@project.version@'
+bootstrapVersion: '@bootstrap.version@'
+
+info:
+  app:
+    name: '@project.artifactId@'
+    description: '@project.description@'
+    version: '@project.version@'
+
+management:
+  security:
+    enabled: false
