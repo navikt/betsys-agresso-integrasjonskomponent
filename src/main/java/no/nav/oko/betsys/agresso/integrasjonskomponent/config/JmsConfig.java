@@ -53,7 +53,8 @@ public class JmsConfig {
     public JmsConfiguration jmsConfiguration(ConnectionFactory connectionFactory) {
         JmsConfiguration jmsConfiguration = new JmsConfiguration();
         jmsConfiguration.setConnectionFactory(connectionFactory);
-//        jmsConfiguration.setTransacted(true);
+        jmsConfiguration.setTransacted(true);
+        jmsConfiguration.setLazyCreateTransactionManager(true);
         return jmsConfiguration;
     }
 
