@@ -11,3 +11,7 @@ info:
 management:
   security:
     enabled: false
+
+camel:
+  springboot:
+    main-run-controller: true
