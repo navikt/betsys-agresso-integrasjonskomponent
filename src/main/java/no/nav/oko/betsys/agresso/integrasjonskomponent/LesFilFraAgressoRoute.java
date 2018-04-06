@@ -41,15 +41,10 @@ public class LesFilFraAgressoRoute extends RouteBuilder {
         LOGGER.info(sftpPath);
 
         from(sftpPath)
-                // Kopier til betsys
-                // Send SBDH på kø
-                // Flytt samme fil til arkiv-mappen på FTP-server
-                // Hvor ofte skal man polle FTP-serveren?
-                // Hvor lenge skal man vente fra man poller til man leser filene?
                 .log("Lest fil med navn: ${header.CamelFileNameOnly}")
                 .log("Body: ${body}")
-                .process(tilBetsysProcessor);
-        //to("betsys-kø");
+                .process(tilBetsysProcessor)
+                .to("ref:betsysInn");
     }
 
 
