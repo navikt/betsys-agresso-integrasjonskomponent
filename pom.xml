@@ -89,6 +89,12 @@
             <artifactId>com.ibm.mqjms</artifactId>
             <version>${wmq.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.ibm.mq</groupId>
+            <artifactId>jmqi</artifactId>
+            <version>${wmq.version}</version>
+            <scope>runtime</scope>
+        </dependency>
 
         <!--&lt;!&ndash; Web server &ndash;&gt;-->
         <!--<dependency>-->
