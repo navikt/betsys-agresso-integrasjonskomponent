@@ -56,3 +56,10 @@ fasitResources:
     propertyMap:
       username: SFTPUSERNAME
       password: SFTPPASSWORD
+  - alias: Betsys_sftp_server
+    resourceType: baseUrl
+  - alias: Betsys_sftp_user
+    resourceType: credential
+    propertyMap:
+      username: BETSYSUSERNAME
+      password: BETSYSPASSWORD

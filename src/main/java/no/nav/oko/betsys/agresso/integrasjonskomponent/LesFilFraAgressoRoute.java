@@ -26,6 +26,16 @@ public class LesFilFraAgressoRoute extends SpringRouteBuilder {
     @Value("${SFTPSERVERURL}")
     private String sftpUrl;
 
+    @Value("${BETSYS_SFTP_SERVER_URL}")
+    private String betsysSftpUrl;
+
+    @Value("${BETSYSUSERNAME}")
+    private String betsysSftpUsername;
+
+    @Value("${BETSYSPASSWORD}")
+    private String betsysSftpPassword;
+
+
     private TilBetsysProcessor tilBetsysProcessor;
 
     @Autowired
@@ -36,6 +46,7 @@ public class LesFilFraAgressoRoute extends SpringRouteBuilder {
     @Override
     public void configure() throws Exception {
         String sftpPath = getSftpPathWithReadLock(sftpUrl, sftpUsername, sftpPassword);
+        String betsysSftpPath = "sftp://" + betsysSftpUsername + "@" + betsysSftpUrl + "/srv/nais_apps/q0/naisnfs" + "?password=" + betsysSftpPassword;
 
         LOGGER.info("Setter opp Camel-route");
         LOGGER.info(sftpPath);
@@ -44,6 +55,7 @@ public class LesFilFraAgressoRoute extends SpringRouteBuilder {
                 .log("Lest fil med navn: ${header.CamelFileNameOnly}")
                 .log("Body: ${body}")
                 .process(tilBetsysProcessor)
+                .to(betsysSftpPath)
                 .to("ref:betsysInn");
     }
 

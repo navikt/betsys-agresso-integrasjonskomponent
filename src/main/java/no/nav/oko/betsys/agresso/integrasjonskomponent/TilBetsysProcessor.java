@@ -17,6 +17,7 @@ public class TilBetsysProcessor implements Processor {
         LOGGER.info("Flytter fil til NFS og sender SBDH påkø");
         LOGGER.info(exchange.getIn().getBody().toString());
 
+
         // Legg fil på NFS share til betsys
         // Generer SBDH
         // Legg på kø til betsys
