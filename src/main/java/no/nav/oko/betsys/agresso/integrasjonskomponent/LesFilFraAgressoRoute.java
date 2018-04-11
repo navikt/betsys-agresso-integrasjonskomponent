@@ -63,13 +63,17 @@ public class LesFilFraAgressoRoute extends SpringRouteBuilder {
                 .log("Body: ${body}")
                 .to("validator:file:pain.001.001.03.xsd")
                 .to(betsysSftpPath)
+                //.setHeader("myHeader").xpath("/list/Name/text()", String.class)
+                //.from("").to("")
+                //.from("")
+                .bean(tilBetsysProcessor)
                 .to("ref:betsysUt")
                 .end();
 
 
 
 
-//                .process(tilBetsysProcessor)
+//
 //
 //
 //        from("file://inbox")
