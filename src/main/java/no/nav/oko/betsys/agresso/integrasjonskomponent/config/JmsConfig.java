@@ -21,25 +21,25 @@ public class JmsConfig {
     @Value("${CHANNELNAME}")
     private String channelName;
 
-    @Bean
-    public Queue betsysInnQueue(@Value("${SENDING_TIL_AGRESSO_QUEUE}") String betsysInnQueue) throws JMSException {
-        return new MQQueue(betsysInnQueue);
-    }
+//    @Bean
+//    public Queue betsysInnQueue(@Value("${SENDING_TIL_AGRESSO_QUEUE}") String betsysInnQueue) throws JMSException {
+//        return new MQQueue(betsysInnQueue);
+//    }
 
     @Bean
     public Queue betsysUtQueue(@Value("${SENDING_TIL_BANK_QUEUE}") String betsysUtQueue) throws JMSException {
         return new MQQueue(betsysUtQueue);
     }
 
-    @Bean("betsysInn")
-    public JmsEndpoint betsysInnEndpoint(Queue betsysInnQueue,
-                                         ConnectionFactory connectionFactory,
-                                         JmsConfiguration jmsConfiguration) throws JMSException {
-        JmsEndpoint jmsEndpoint = JmsEndpoint.newInstance(betsysInnQueue);
-//        jmsEndpoint.setConnectionFactory(connectionFactory);
-        jmsEndpoint.setConfiguration(jmsConfiguration);
-        return jmsEndpoint;
-    }
+//    @Bean("betsysInn")
+//    public JmsEndpoint betsysInnEndpoint(Queue betsysInnQueue,
+//                                         ConnectionFactory connectionFactory,
+//                                         JmsConfiguration jmsConfiguration) throws JMSException {
+//        JmsEndpoint jmsEndpoint = JmsEndpoint.newInstance(betsysInnQueue);
+////        jmsEndpoint.setConnectionFactory(connectionFactory);
+//        jmsEndpoint.setConfiguration(jmsConfiguration);
+//        return jmsEndpoint;
+//    }
 
     @Bean("betsysUt")
     public JmsEndpoint betsysUtEndpoint(Queue betsysUtQueue,
