@@ -48,10 +48,10 @@ pipeline {
                     withCredentials([[$class: "UsernamePasswordMultiBinding", credentialsId: 'nais-user2', usernameVariable: "NAIS_USERNAME", passwordVariable: "NAIS_PASSWORD"]]) {
                         def postBody = [
                                 application: "betsys-agresso-integrasjonskomponent",
-                                environment: "t1",
+                                fasitEnvironment: "t1",
                                 version    : "1.0.${env.BUILD_ID}",
-                                username   : "${env.NAIS_USERNAME}",
-                                password   : "${env.NAIS_PASSWORD}",
+                                fasitUsername   : "${env.NAIS_USERNAME}",
+                                fasitPassword   : "${env.NAIS_PASSWORD}",
                                 zone       : "fss",
                                 namespace  : "default"
                         ]
