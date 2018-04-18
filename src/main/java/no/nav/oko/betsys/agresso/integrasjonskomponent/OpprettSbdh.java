@@ -1,11 +1,7 @@
 package no.nav.oko.betsys.agresso.integrasjonskomponent;
 
-import no.difi.commons.sbdh.jaxb.BusinessScope;
-import no.difi.commons.sbdh.jaxb.DocumentIdentification;
-import no.difi.commons.sbdh.jaxb.Partner;
-import no.difi.commons.sbdh.jaxb.PartnerIdentification;
-import no.difi.commons.sbdh.jaxb.Scope;
-import no.difi.commons.sbdh.jaxb.StandardBusinessDocumentHeader;
+import no.difi.commons.sbdh.jaxb.*;
+import org.apache.camel.Exchange;
 import org.apache.camel.Handler;
 import org.apache.camel.Header;
 import org.slf4j.Logger;
@@ -25,9 +21,9 @@ import java.util.GregorianCalendar;
 import java.util.Map;
 
 @Component
-public class SbdhMessage {
+public class OpprettSbdh {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SbdhMessage.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OpprettSbdh.class);
 
     private static final String DOCUMENT_SCOPE_TYPE = "DOCUMENTID";
 
@@ -44,11 +40,11 @@ public class SbdhMessage {
     private static final String DOCUMENT_IDENTIFICATION_TYPE = "Document";
 
 
-    private String makeSbdh(String bankId, String filnavn, Long isoMeldingId) {
+    private String makeSbdh(String filnavn) {
         StandardBusinessDocumentHeader sbdh = createHeader();
         sbdh.setBusinessScope(createURBusinessScope());
-        sbdh.getSender().add(createPartner(null, bankId, true));
-        sbdh.getReceiver().add(createPartner(null, bankId, false));
+        sbdh.getSender().add(createPartner("sender", true));
+        sbdh.getReceiver().add(createPartner("reciever", false));
         sbdh.setDocumentIdentification(createURDocumentIdentification(filnavn));
 
         Jaxb2Marshaller marshallerSBDHTilBetsys = new Jaxb2Marshaller();
@@ -59,8 +55,6 @@ public class SbdhMessage {
         StreamResult result = new StreamResult(sw);
 
         marshallerSBDHTilBetsys.marshal(new JAXBElement<>(new QName("StandardBusinessDocumentHeader"), StandardBusinessDocumentHeader.class, sbdh), result);
-
-
 
         return sw.toString();
     }
@@ -75,6 +69,7 @@ public class SbdhMessage {
         businessScope.getScope().add(createSimpleScope(proPair));
         return businessScope;
     }
+
     private DocumentIdentification createURDocumentIdentification(String filNavn) {
         DocumentIdentification docId = new DocumentIdentification();
         docId.setStandard(DOCUMENT_IDENTIFICATION_STANDARD);
@@ -85,6 +80,7 @@ public class SbdhMessage {
         return docId;
 
     }
+
     private StandardBusinessDocumentHeader createHeader() {
         StandardBusinessDocumentHeader header = new StandardBusinessDocumentHeader();
         header.setHeaderVersion("1.0");
@@ -102,6 +98,7 @@ public class SbdhMessage {
             return null;
         }
     }
+
     private Scope createSimpleScope(Map.Entry<String, String> pair) {
         Scope scope = new Scope();
         scope.setType(pair.getKey());
@@ -109,31 +106,26 @@ public class SbdhMessage {
         return scope;
     }
 
-    private Partner createPartner(String authority, String identifier, boolean sender) {
+    private Partner createPartner(String identifier, boolean sender) {
         Partner partner = new Partner();
-        String partnerKundenummer = "testPartnerKundenummer";
         if (sender) {
-          //  partnerKundenummer = kundenummerRepository.getKundenummerForSystem(identifier).trim();
+            //  partnerKundenummer = kundenummerRepository.getKundenummerForSystem(identifier).trim();
         } else {
-          //  partnerKundenummer = kundenummerRepository.getOrgnummerForSystem(identifier).trim();
+            //  partnerKundenummer = kundenummerRepository.getOrgnummerForSystem(identifier).trim();
         }
-        String knr = "9908:" + partnerKundenummer;
+        String knr = "9908:" + identifier;
 
         PartnerIdentification partnerIdentification = new PartnerIdentification();
-        partnerIdentification.setAuthority(authority); //todo hardkodet verdi?
+//        partnerIdentification.setAuthority(null); //todo hardkodet verdi?
         partnerIdentification.setValue(knr);
         partner.setIdentifier(partnerIdentification);
         return partner;
     }
 
 
-
-
-
     @Handler
-    public  String sendSbdh(@Header("CamelFileNameOnly") String filnavn) {
-
-     return makeSbdh("test", filnavn.replace(".lis",  ""), 123L);
-
+    public void sendSbdh(@Header("CamelFileNameOnly") String filnavn, Exchange exchange) {
+        // Eksternt prosjekt genererer SBDH
+        exchange.getOut().setBody(makeSbdh(filnavn));
     }
 }

@@ -28,25 +28,23 @@ public class JmsConfig {
 
     @Bean
     public Queue betsysUtQueue(@Value("${SENDING_TIL_BANK_QUEUE}") String betsysUtQueue) throws JMSException {
-        return new MQQueue(betsysUtQueue);
+        MQQueue mqQueue = new MQQueue(betsysUtQueue);
+        mqQueue.setTargetClient(WMQConstants.WMQ_CLIENT_NONJMS_MQ);
+        return mqQueue;
     }
 
     @Bean("betsysInn")
     public JmsEndpoint betsysInnEndpoint(Queue betsysInnQueue,
-                                         ConnectionFactory connectionFactory,
                                          JmsConfiguration jmsConfiguration) throws JMSException {
         JmsEndpoint jmsEndpoint = JmsEndpoint.newInstance(betsysInnQueue);
-//        jmsEndpoint.setConnectionFactory(connectionFactory);
         jmsEndpoint.setConfiguration(jmsConfiguration);
         return jmsEndpoint;
     }
 
     @Bean("betsysUt")
     public JmsEndpoint betsysUtEndpoint(Queue betsysUtQueue,
-                                        ConnectionFactory connectionFactory,
                                         JmsConfiguration jmsConfiguration) throws JMSException {
         JmsEndpoint jmsEndpoint = JmsEndpoint.newInstance(betsysUtQueue);
-//        jmsEndpoint.setConnectionFactory(connectionFactory);
         jmsEndpoint.setConfiguration(jmsConfiguration);
         return jmsEndpoint;
     }
