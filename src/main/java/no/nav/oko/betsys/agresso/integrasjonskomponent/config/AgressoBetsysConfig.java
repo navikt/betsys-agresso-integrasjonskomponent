@@ -2,6 +2,7 @@ package no.nav.oko.betsys.agresso.integrasjonskomponent.config;
 
 import io.prometheus.client.spring.boot.EnablePrometheusEndpoint;
 import io.prometheus.client.spring.boot.EnableSpringBootMetricsCollector;
+import io.prometheus.client.spring.web.EnablePrometheusTiming;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableCaching
 @EnablePrometheusEndpoint
+@EnablePrometheusTiming
 @EnableSpringBootMetricsCollector
 @EnableConfigurationProperties({GatewayAlias.class})
 @Configuration
