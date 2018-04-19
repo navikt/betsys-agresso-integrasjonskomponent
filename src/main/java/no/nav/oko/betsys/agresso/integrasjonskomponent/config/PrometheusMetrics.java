@@ -7,7 +7,7 @@ import static no.nav.oko.betsys.agresso.integrasjonskomponent.config.PrometheusL
 
 public class PrometheusMetrics {
 
-    private static final String NAMESPACE = "agresso-betsys";
+    private static final String NAMESPACE = "agresso_betsys";
 
     public static final Gauge isReady = Gauge.build()
             .namespace(NAMESPACE)
