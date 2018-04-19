@@ -79,7 +79,7 @@ public class BetsysTilAgressoRoute extends SpringRouteBuilder {
                 username +
                 "@" +
                 url +
-                "/inbound" +
+                "/outbound" +
                 "?password=" +
                 password +
                 "&useUserKnownHostsFile=false";

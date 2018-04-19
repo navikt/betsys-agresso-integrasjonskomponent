@@ -17,7 +17,7 @@ public class AgressoTilBetsysRoute extends SpringRouteBuilder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AgressoTilBetsysRoute.class);
 
-    private static final String SFTP_OPTIONS = "&useUserKnownHostsFile=false&delay=3600000&move=Arkiv";
+    private static final String SFTP_OPTIONS = "&useUserKnownHostsFile=false&initialDelay=15000&maxMessagesPerPoll=1&delay=15000&move=Arkiv";
 
     @Value("${SFTPUSERNAME}")
     private String agressoSftpUsername;
@@ -68,7 +68,7 @@ public class AgressoTilBetsysRoute extends SpringRouteBuilder {
                 username +
                 "@" +
                 url +
-                "/outbound" +
+                "/inbound" +
                 "?password=" +
                 password;
     }

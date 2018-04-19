@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import static no.nav.oko.betsys.agresso.integrasjonskomponent.config.PrometheusMetrics.isReady;
+
 @Controller
 public class SelfcheckController {
 
@@ -20,7 +22,7 @@ public class SelfcheckController {
     @RequestMapping(value = "isReady", produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> isReady() {
         //TODO: Add some selftests
-//        isReady.set(1);
+        isReady.set(1);
         return new ResponseEntity<>("Ready", HttpStatus.OK);
     }
 }
