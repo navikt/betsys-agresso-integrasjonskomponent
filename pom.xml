@@ -35,6 +35,7 @@
         <wmq.version>7.0</wmq.version>
         <maven.surefire.plugin.version>2.19.1</maven.surefire.plugin.version>
         <maven.failsafe.plugin.version>2.19.1</maven.failsafe.plugin.version>
+        <prometheus.version>0.0.26</prometheus.version>
     </properties>
 
     <dependencies>
@@ -81,13 +82,28 @@
         <!-- metrikker -->
         <dependency>
             <groupId>io.prometheus</groupId>
-            <artifactId>simpleclient_spring_boot</artifactId>
-            <version>0.0.26</version>
+            <artifactId>simpleclient</artifactId>
+            <version>${prometheus.version}</version>
         </dependency>
         <dependency>
             <groupId>io.prometheus</groupId>
             <artifactId>simpleclient_hotspot</artifactId>
-            <version>0.0.26</version>
+            <version>${prometheus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient_servlet</artifactId>
+            <version>${prometheus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient_pushgateway</artifactId>
+            <version>${prometheus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient_spring_boot</artifactId>
+            <version>${prometheus.version}</version>
         </dependency>
 
         <!-- IBM -->
