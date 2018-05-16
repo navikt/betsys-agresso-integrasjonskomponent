@@ -1,5 +1,8 @@
 package no.nav.oko.betsys.agresso.integrasjonskomponent;
 
+
+import no.nav.generer.sbdh.SbdhService;
+import no.nav.generer.sbdh.generer.SbdhType;
 import org.apache.camel.Exchange;
 import org.apache.camel.spring.SpringRouteBuilder;
 import org.slf4j.Logger;
@@ -38,7 +41,7 @@ public class AgressoTilBetsysRoute extends SpringRouteBuilder {
     private String betsysSftpPassword;
 
     @Override
-    public void configure() throws Exception {
+    public void configure() {
         String agressoOutbound = getOutboundAgressoSftpPath(agressoSftpUrl, agressoSftpUsername, agressoSftpPassword);
         String betsysSftpPath = getBetsysSftpPath(betsysSftpUrl, betsysSftpUsername, betsysSftpPassword);
 
@@ -56,7 +59,12 @@ public class AgressoTilBetsysRoute extends SpringRouteBuilder {
                 .log("Lest fil med navn: ${header.CamelFileNameOnly}")
                 .to("validator:file:pain.001.001.03.xsd")
                 .to(betsysSftpPath)
-                .bean(OpprettSbdh.class)
+                .process(exchange -> {
+                  String filename = exchange.getIn().getHeader("CamelFileNameOnly", String.class);
+                  exchange.getOut().setBody(
+                            SbdhService.opprettStringSBDH(SbdhType.PAIN001,filename,"test", "test"));
+                    }
+                )
                 .to("ref:betsysUt")
                 .process(exchange -> agressoCounter.labels(PROCESS_AGRESSO, "Fil kopiert til Betsys").inc())
                 .end();

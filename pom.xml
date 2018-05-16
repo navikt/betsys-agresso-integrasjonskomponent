@@ -78,6 +78,15 @@
             <version>3.0.0.RELEASE</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.apache.ftpserver/ftpserver-core -->
+        <dependency>
+            <groupId>org.apache.ftpserver</groupId>
+            <artifactId>ftpserver-core</artifactId>
+            <version>1.1.1</version>
+            <scope>test</scope>
+        </dependency>
+
+
 
         <!-- metrikker -->
         <dependency>
@@ -160,14 +169,6 @@
             <version>${camel.version}</version>
         </dependency>
 
-
-        <!-- Metrics -->
-        <dependency>
-            <groupId>io.prometheus</groupId>
-            <artifactId>simpleclient_servlet</artifactId>
-            <version>${prometheus.version}</version>
-        </dependency>
-
         <!-- Logging -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -203,7 +204,11 @@
             <version>0.9.5</version>
         </dependency>
 
-
+        <dependency>
+            <groupId>iso20022</groupId>
+            <artifactId>iso20022-sbdh</artifactId>
+            <version>13.0.3</version>
+        </dependency>
 
     </dependencies>
 
