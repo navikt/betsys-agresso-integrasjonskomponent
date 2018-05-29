@@ -16,4 +16,17 @@ camel:
   springboot:
     main-run-controller: true
 
-optConfig: production
+optConfig: test
+
+SFTPUSERNAME: admin
+SFTPPASSWORD: admin
+SFTPSERVERURL: localhost
+BETSYS_SFTP_SERVER_URL: localhost
+BETSYSUSERNAME: admin
+BETSYSPASSWORD: admin
+
+activemq:
+  broker-url: vm://embedded-broker?create=false
+
+queue:
+  helloworld: helloworld.q

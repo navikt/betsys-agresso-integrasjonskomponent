@@ -7,6 +7,7 @@ import com.ibm.msg.client.wmq.v6.base.internal.MQC;
 import org.apache.camel.component.jms.JmsConfiguration;
 import org.apache.camel.component.jms.JmsEndpoint;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter;
@@ -16,6 +17,7 @@ import javax.jms.JMSException;
 import javax.jms.Queue;
 
 @Configuration
+@ConditionalOnProperty(value="otpConfig", havingValue="production")
 public class JmsConfig {
 
     @Value("${CHANNELNAME}")

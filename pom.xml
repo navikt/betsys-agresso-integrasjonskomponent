@@ -36,6 +36,8 @@
         <maven.surefire.plugin.version>2.19.1</maven.surefire.plugin.version>
         <maven.failsafe.plugin.version>2.19.1</maven.failsafe.plugin.version>
         <prometheus.version>0.0.26</prometheus.version>
+        <activemq-version>5.15.4</activemq-version>
+        <activemq-junit-version>5.15.4</activemq-junit-version>
     </properties>
 
     <dependencies>
@@ -78,15 +80,27 @@
             <version>3.0.0.RELEASE</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.apache.ftpserver/ftpserver-core -->
+        <!-- https://mvnrepository.com/artifact/org.apache.sshd/sshd-core -->
         <dependency>
-            <groupId>org.apache.ftpserver</groupId>
-            <artifactId>ftpserver-core</artifactId>
-            <version>1.1.1</version>
+            <groupId>org.apache.sshd</groupId>
+            <artifactId>sshd-core</artifactId>
+            <version>1.7.0</version>
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.activemq.tooling</groupId>
+            <artifactId>activemq-junit</artifactId>
+            <version>${activemq-junit-version}</version>
+            <scope>test</scope>
+        </dependency>
 
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-broker</artifactId>
+            <version>${activemq-version}</version>
+            <scope>test</scope>
+        </dependency>
 
         <!-- metrikker -->
         <dependency>
@@ -199,16 +213,26 @@
         </dependency>
 
         <dependency>
-            <groupId>no.difi.commons</groupId>
-            <artifactId>commons-sbdh</artifactId>
-            <version>0.9.5</version>
-        </dependency>
-
-        <dependency>
             <groupId>iso20022</groupId>
             <artifactId>iso20022-sbdh</artifactId>
             <version>13.0.3</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.camel/camel-test-spring -->
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-test-spring</artifactId>
+            <version>${camel.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>${spring.boot.version}</version>
+            <scope>test</scope>
+        </dependency>
+
 
     </dependencies>
 
