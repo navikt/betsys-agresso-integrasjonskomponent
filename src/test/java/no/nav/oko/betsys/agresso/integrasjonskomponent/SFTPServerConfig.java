@@ -10,7 +10,6 @@ import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
 import org.apache.sshd.server.scp.ScpCommandFactory;
 import org.apache.sshd.server.subsystem.sftp.SftpSubsystemFactory;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ import java.util.List;
 
 public class SFTPServerConfig {
 
-    public void start(int port, String path) {
+    public SshServer configure(String host, int port, String path) {
         List<NamedFactory<UserAuth>> userAuthFactories = new ArrayList<>();
         userAuthFactories.add(new UserAuthPasswordFactory());
 
@@ -28,6 +27,7 @@ public class SFTPServerConfig {
 
         SshServer sshd = SshServer.setUpDefaultServer();
         sshd.setPort(port);
+        sshd.setHost(host);
         sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider());
         sshd.setCommandFactory(new ScpCommandFactory());
         sshd.setUserAuthFactories(userAuthFactories);
@@ -45,13 +45,7 @@ public class SFTPServerConfig {
             return false;
         });
 
-        try {
-            sshd.start();
-//            SFTPServerConfig object = new SFTPServerConfig();
-//            object.waitMethod();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        return sshd;
     }
 
     public synchronized void waitMethod() {

@@ -18,7 +18,7 @@ public class Receiver {
         return latch;
     }
 
-    @JmsListener(destination = "helloworld.q")
+    @JmsListener(destination = "${SENDING_TIL_BANK_QUEUE}")
     public void receive(String message) {
         LOGGER.info("received message='{}'", message);
         latch.countDown();

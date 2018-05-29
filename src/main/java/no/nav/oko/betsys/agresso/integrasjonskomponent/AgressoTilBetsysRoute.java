@@ -60,7 +60,7 @@ public class AgressoTilBetsysRoute extends SpringRouteBuilder {
                 .to("validator:file:pain.001.001.03.xsd")
                 .to(betsysSftpPath)
                 .process(exchange -> {
-                  String filename = exchange.getIn().getHeader("CamelFileNameOnly", String.class);
+                  String filename = exchange.getIn().getHeader("CamelFileNameOnly", String.class).replace(".lis", "");
                   exchange.getOut().setBody(
                             SbdhService.opprettStringSBDH(SbdhType.PAIN001,filename,"test", "test"));
                     }
@@ -76,7 +76,7 @@ public class AgressoTilBetsysRoute extends SpringRouteBuilder {
                 username +
                 "@" +
                 url +
-                "/inbound" +
+                "/outbound" +
                 "?password=" +
                 password;
     }

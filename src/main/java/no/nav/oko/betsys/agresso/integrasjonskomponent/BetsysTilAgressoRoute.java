@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 import static no.nav.oko.betsys.agresso.integrasjonskomponent.config.PrometheusLabels.LABEL_TECHNICAL_EXCEPTION;
 import static no.nav.oko.betsys.agresso.integrasjonskomponent.config.PrometheusLabels.PROCESS_BETSYS;
-import static no.nav.oko.betsys.agresso.integrasjonskomponent.config.PrometheusMetrics.exceptionCounter;
 import static no.nav.oko.betsys.agresso.integrasjonskomponent.config.PrometheusMetrics.betsysCounter;
+import static no.nav.oko.betsys.agresso.integrasjonskomponent.config.PrometheusMetrics.exceptionCounter;
 
 @Service
 public class BetsysTilAgressoRoute extends SpringRouteBuilder {
@@ -39,7 +39,7 @@ public class BetsysTilAgressoRoute extends SpringRouteBuilder {
     private String betsysSftpPassword;
 
     @Override
-    public void configure() throws Exception {
+    public void configure() {
         String agressoInbound = getInboundAgressoSftpPath(agressoSftpUrl, agressoSftpUsername, agressoSftpPassword);
         String betsysSftpPath = getBetsysSftpPath(betsysSftpUrl, betsysSftpUsername, betsysSftpPassword);
 
@@ -79,7 +79,7 @@ public class BetsysTilAgressoRoute extends SpringRouteBuilder {
                 username +
                 "@" +
                 url +
-                "/outbound" +
+                "/inbound" +
                 "?password=" +
                 password +
                 "&useUserKnownHostsFile=false";

@@ -61,12 +61,12 @@ public class JmsTestConfig {
 
 
     @Bean
-    public Queue betsysInnQueue(@Value("${SENDING_TIL_AGRESSO_QUEUE:testInn}") String betsysInnQueue){
+    public Queue betsysInnQueue(@Value("${SENDING_TIL_AGRESSO_QUEUE}") String betsysInnQueue){
         return () -> betsysInnQueue;
     }
 
     @Bean
-    public Queue betsysUtQueue(@Value("${SENDING_TIL_BANK_QUEUE:testUt}") String betsysUtQueue) {
+    public Queue betsysUtQueue(@Value("${SENDING_TIL_BANK_QUEUE}") String betsysUtQueue) {
         return () -> betsysUtQueue;
     }
 
