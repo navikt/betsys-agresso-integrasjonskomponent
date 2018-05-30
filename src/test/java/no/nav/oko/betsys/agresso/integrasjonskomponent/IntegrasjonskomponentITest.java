@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(classes = JmsTestConfig.class)
 
 
-public class IntegrasjonskomponentTest
+public class IntegrasjonskomponentITest
 {
 
     @Autowired
@@ -34,8 +34,8 @@ public class IntegrasjonskomponentTest
     public static void setup() throws IOException {
 
         SFTPServerConfig serverConfig = new SFTPServerConfig();
-        SshServer server = serverConfig.configure("127.0.0.1",22, "Agresso");
-        SshServer server2 = serverConfig.configure("127.0.0.2",22, "Betsys");
+        SshServer server = serverConfig.configure("127.0.0.1",2222, "Agresso");
+        SshServer server2 = serverConfig.configure("127.0.0.2",2222, "Betsys");
         server.start();
         server2.start();
     }

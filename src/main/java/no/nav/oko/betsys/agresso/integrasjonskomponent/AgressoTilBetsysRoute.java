@@ -76,7 +76,7 @@ public class AgressoTilBetsysRoute extends SpringRouteBuilder {
                 username +
                 "@" +
                 url +
-                "/outbound" +
+                ":2222/outbound" +
                 "?password=" +
                 password;
     }
@@ -86,7 +86,7 @@ public class AgressoTilBetsysRoute extends SpringRouteBuilder {
                 username +
                 "@" +
                 url +
-                "/srv/nais_apps/q0/naisnfs/out" +
+                ":2222/srv/nais_apps/q0/naisnfs/out" +
                 "?password=" +
                 password +
                 "&useUserKnownHostsFile=false";
