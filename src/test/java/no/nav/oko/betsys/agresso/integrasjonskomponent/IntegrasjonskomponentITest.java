@@ -62,15 +62,13 @@ public class IntegrasjonskomponentITest
     @ClassRule
     public static EmbeddedActiveMQBroker broker = new EmbeddedActiveMQBroker();
 
-
     @Test
     public void enFilFraAgressoTilBetsys() throws Exception {
-
         String filnavn = "Agresso_44.lis";
         Files.copy(Paths.get(classLoader.getResource(filstiStagingArea + filnavn).toURI()), Paths.get(mainPath,filstiTilAgressoUt + filnavn), StandardCopyOption.REPLACE_EXISTING);
         receiver.getLatch().await(100000, TimeUnit.MILLISECONDS);
         assertEquals(0, receiver.getLatch().getCount());
-        await().atMost(Duration.FIVE_SECONDS).until( () ->  classLoader.getResource(filstiTilBetsysUt + filnavn) != null);
+        await().atMost(Duration.ONE_MINUTE).until( () ->  classLoader.getResource(filstiTilBetsysUt + filnavn) != null);
         assertNotNull(classLoader.getResource(filstiTilBetsysUt + filnavn));
         Files.delete(Paths.get(classLoader.getResource(filstiTilBetsysUt + filnavn).toURI()));
     }
@@ -80,8 +78,57 @@ public class IntegrasjonskomponentITest
         String filnavn = "Agresso_45.xml";
         Files.copy(Paths.get(classLoader.getResource(filstiStagingArea + filnavn).toURI()),Paths.get(mainPath, filstiTilBetsysUt + filnavn) , StandardCopyOption.REPLACE_EXISTING);
         sender.send("agresso", SbdhService.opprettStringSBDH(SbdhType.PAIN001,filnavn.replace(".xml", ""), "test","test"));
-        await().atMost(Duration.FIVE_SECONDS).until( () ->  classLoader.getResource(filstiTilAgressoInn + filnavn) != null);
+        await().atMost(Duration.ONE_MINUTE).until( () ->  classLoader.getResource(filstiTilAgressoInn + filnavn) != null);
         assertNotNull(classLoader.getResource(filstiTilAgressoInn + filnavn));
         Files.delete(Paths.get(classLoader.getResource(filstiTilAgressoInn + filnavn).toURI()));
     }
+
+    @Test
+    public void feilFilFraAgressoTilBetsys() throws URISyntaxException, IOException, InterruptedException {
+        //todo sende Alarm ved slik feil
+        String filnavn = "feilFil.xml";
+        String errorMappe= "/Error/";
+        Files.copy(Paths.get(classLoader.getResource(filstiStagingArea + filnavn).toURI()), Paths.get(mainPath,filstiTilAgressoUt + filnavn), StandardCopyOption.REPLACE_EXISTING);
+        receiver.getLatch().await(100000, TimeUnit.MILLISECONDS);
+        assertEquals(0, receiver.getLatch().getCount());
+        await().atMost(Duration.ONE_MINUTE).until( () ->  classLoader.getResource(filstiTilAgressoUt + errorMappe + filnavn) != null);
+    }
+    @Test
+    public void manglendeFilFraBetsysTilAgresso(){
+        //TODO implement test
+    }
+    @Test
+    public void manglendeKontaktMedBetsysKo(){
+        //TODO implement test
+    }
+    @Test
+    public void manglendeKontaktMedAgressoKo(){
+        //TODO implement test
+    }
+    @Test
+    public void fullkoPaaBetsys(){
+        //TODO implement test
+    }
+    @Test
+    public void fullKoPaaAgresso(){
+        //TODO implement test
+    }
+
+    @Test
+    public void manglendeKontaktMedAgressoFilserver(){
+        //TODO implement test
+    }
+    @Test
+    public void manglendeKontaktMedBetsysFilserver(){
+        //TODO implement test
+    }
+    @Test
+    public void fullDiskPaaAgressoFilserver(){
+        //TODO implement test
+    }
+    @Test
+    public void fullDiskPaaBetsysFilserver(){
+        //TODO implement test
+    }
+
 }

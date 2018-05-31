@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.xml.sax.SAXParseException;
 
 import static no.nav.oko.betsys.agresso.integrasjonskomponent.config.PrometheusLabels.LABEL_TECHNICAL_EXCEPTION;
 import static no.nav.oko.betsys.agresso.integrasjonskomponent.config.PrometheusLabels.PROCESS_AGRESSO;
@@ -20,7 +21,7 @@ public class AgressoTilBetsysRoute extends SpringRouteBuilder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AgressoTilBetsysRoute.class);
 
-    private static final String SFTP_OPTIONS = "&useUserKnownHostsFile=false&initialDelay=15000&maxMessagesPerPoll=1&delay=15000&move=Arkiv";
+    private static final String SFTP_OPTIONS = "&useUserKnownHostsFile=false&initialDelay=15000&maxMessagesPerPoll=1&delay=15000&move=Arkiv&moveFailed=Error";
 
     @Value("${SFTPUSERNAME}")
     private String agressoSftpUsername;
@@ -53,7 +54,6 @@ public class AgressoTilBetsysRoute extends SpringRouteBuilder {
                     exceptionCounter.labels(PROCESS_AGRESSO, LABEL_TECHNICAL_EXCEPTION, exception.getClass().getSimpleName()).inc();
                         })
         );
-
         from(agressoOutbound + SFTP_OPTIONS)
                 .routeId("KopierFilFraAgresso")
                 .log("Lest fil med navn: ${header.CamelFileNameOnly}")
