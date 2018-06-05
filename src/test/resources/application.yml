@@ -20,13 +20,14 @@ optConfig: test
 
 SFTPUSERNAME: admin
 SFTPPASSWORD: admin
-SFTPSERVERURL: 127.0.0.1
+SFTPSERVERURL: 127.0.0.3
 BETSYS_SFTP_SERVER_URL: 127.0.0.2
 BETSYSUSERNAME: admin
 BETSYSPASSWORD: admin
 SENDING_TIL_BANK_QUEUE: betsys
 SENDING_TIL_AGRESSO_QUEUE: agresso
 
+PORT: 2222
 
 activemq:
   broker-url: vm://embedded-broker?create=false

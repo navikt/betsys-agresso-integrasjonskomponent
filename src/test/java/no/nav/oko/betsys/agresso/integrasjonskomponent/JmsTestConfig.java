@@ -20,8 +20,6 @@ import javax.jms.Queue;
 @EnableJms
 public class JmsTestConfig {
 
-
-
     @Bean
     @Primary
     public ActiveMQConnectionFactory activeMQConnectionFactory() {
@@ -52,6 +50,12 @@ public class JmsTestConfig {
     public Receiver receiver() {
         return new Receiver();
     }
+
+    @Bean
+    public DLQReceiver dlqReceiver() {
+        return new DLQReceiver();
+    }
+
 
     @Bean
     public Sender sender() {

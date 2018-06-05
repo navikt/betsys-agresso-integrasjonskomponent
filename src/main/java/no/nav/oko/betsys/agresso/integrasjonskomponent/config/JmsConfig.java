@@ -17,7 +17,7 @@ import javax.jms.JMSException;
 import javax.jms.Queue;
 
 @Configuration
-@ConditionalOnProperty(value="otpConfig", havingValue="production")
+@ConditionalOnProperty(value="optConfig", havingValue="production")
 public class JmsConfig {
 
     @Value("${CHANNELNAME}")

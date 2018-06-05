@@ -38,6 +38,10 @@ public class BetsysTilAgressoRoute extends SpringRouteBuilder {
     @Value("${BETSYSPASSWORD}")
     private String betsysSftpPassword;
 
+    @Value("${PORT}")
+    private String port;
+
+
     @Override
     public void configure() {
         String agressoInbound = getInboundAgressoSftpPath(agressoSftpUrl, agressoSftpUsername, agressoSftpPassword);
@@ -68,7 +72,7 @@ public class BetsysTilAgressoRoute extends SpringRouteBuilder {
                 username +
                 "@" +
                 url +
-                ":2222/srv/nais_apps/q0/naisnfs/out" +
+                ":" + port + "/srv/nais_apps/q0/naisnfs/out" +
                 "?password=" +
                 password +
                 "&useUserKnownHostsFile=false";
@@ -79,7 +83,7 @@ public class BetsysTilAgressoRoute extends SpringRouteBuilder {
                 username +
                 "@" +
                 url +
-                ":2222/inbound" +
+                ":" + port + "/inbound" +
                 "?password=" +
                 password +
                 "&useUserKnownHostsFile=false";

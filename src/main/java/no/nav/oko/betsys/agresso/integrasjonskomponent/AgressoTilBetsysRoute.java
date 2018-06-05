@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.xml.sax.SAXParseException;
 
 import static no.nav.oko.betsys.agresso.integrasjonskomponent.config.PrometheusLabels.LABEL_TECHNICAL_EXCEPTION;
 import static no.nav.oko.betsys.agresso.integrasjonskomponent.config.PrometheusLabels.PROCESS_AGRESSO;
@@ -40,6 +39,9 @@ public class AgressoTilBetsysRoute extends SpringRouteBuilder {
 
     @Value("${BETSYSPASSWORD}")
     private String betsysSftpPassword;
+
+    @Value("${PORT}")
+    private String port;
 
     @Override
     public void configure() {
@@ -76,7 +78,7 @@ public class AgressoTilBetsysRoute extends SpringRouteBuilder {
                 username +
                 "@" +
                 url +
-                ":2222/outbound" +
+                ":" + port + "/outbound" +
                 "?password=" +
                 password;
     }
@@ -86,7 +88,7 @@ public class AgressoTilBetsysRoute extends SpringRouteBuilder {
                 username +
                 "@" +
                 url +
-                ":2222/srv/nais_apps/q0/naisnfs/out" +
+                ":" + port + "/srv/nais_apps/q0/naisnfs/out" +
                 "?password=" +
                 password +
                 "&useUserKnownHostsFile=false";

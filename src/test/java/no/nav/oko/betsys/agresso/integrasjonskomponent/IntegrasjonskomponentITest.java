@@ -22,12 +22,14 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.concurrent.TimeUnit;
 
-import static org.awaitility.Awaitility.*;
-import static org.junit.Assert.*;
+import static org.awaitility.Awaitility.await;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
 @RunWith(CamelSpringBootRunner.class)
 @DirtiesContext
-@SpringBootTest(classes = JmsTestConfig.class)
+@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT, classes = JmsTestConfig.class)
 public class IntegrasjonskomponentITest
 {
 
@@ -36,6 +38,10 @@ public class IntegrasjonskomponentITest
 
     @Autowired
     private Receiver receiver;
+
+    @Autowired
+    private DLQReceiver dlqReceiver;
+
 
     private ClassLoader classLoader = IntegrasjonskomponentITest.class.getClassLoader();
     private URI baseFolder = classLoader.getResource("").toURI();
@@ -46,6 +52,9 @@ public class IntegrasjonskomponentITest
     private final  String filstiTilAgressoUt = "Agresso/outbound/";
     private final String filstiTilAgressoInn = "Agresso/inbound/";
 
+    private static SshServer agressoServer;
+    private static SshServer betsysServer;
+
     public IntegrasjonskomponentITest() throws URISyntaxException {
     }
 
@@ -53,14 +62,15 @@ public class IntegrasjonskomponentITest
     public static void setup() throws IOException {
 
         SFTPServerConfig serverConfig = new SFTPServerConfig();
-        SshServer server = serverConfig.configure("127.0.0.1",2222, "Agresso");
-        SshServer server2 = serverConfig.configure("127.0.0.2",2222, "Betsys");
-        server.start();
-        server2.start();
+        agressoServer = serverConfig.configure("127.0.0.3",2222, "Agresso");
+        betsysServer = serverConfig.configure("127.0.0.2",2222, "Betsys");
+        agressoServer.start();
+        betsysServer.start();
     }
 
     @ClassRule
     public static EmbeddedActiveMQBroker broker = new EmbeddedActiveMQBroker();
+
 
     @Test
     public void enFilFraAgressoTilBetsys() throws Exception {
@@ -91,11 +101,17 @@ public class IntegrasjonskomponentITest
         Files.copy(Paths.get(classLoader.getResource(filstiStagingArea + filnavn).toURI()), Paths.get(mainPath,filstiTilAgressoUt + filnavn), StandardCopyOption.REPLACE_EXISTING);
         receiver.getLatch().await(100000, TimeUnit.MILLISECONDS);
         assertEquals(0, receiver.getLatch().getCount());
-        await().atMost(Duration.ONE_MINUTE).until( () ->  classLoader.getResource(filstiTilAgressoUt + errorMappe + filnavn) != null);
+        await().atMost(Duration.FIVE_MINUTES).until( () ->  classLoader.getResource(filstiTilAgressoUt + errorMappe + filnavn) != null);
+        Files.delete(Paths.get(classLoader.getResource(filstiTilAgressoUt + errorMappe + filnavn).toURI()));
     }
+
     @Test
-    public void manglendeFilFraBetsysTilAgresso(){
-        //TODO implement test
+    public void manglendeFilFraBetsysTilAgresso() throws InterruptedException {
+        //TODO sende alarm
+        String filnavn = "noeTull.xml";
+        sender.send("agresso", SbdhService.opprettStringSBDH(SbdhType.PAIN001,filnavn.replace(".xml", ""), "test","test"));
+        dlqReceiver.getLatch().await(500000, TimeUnit.MILLISECONDS);
+        assertEquals(0, dlqReceiver.getLatch().getCount());
     }
     @Test
     public void manglendeKontaktMedBetsysKo(){
@@ -113,7 +129,6 @@ public class IntegrasjonskomponentITest
     public void fullKoPaaAgresso(){
         //TODO implement test
     }
-
     @Test
     public void manglendeKontaktMedAgressoFilserver(){
         //TODO implement test
