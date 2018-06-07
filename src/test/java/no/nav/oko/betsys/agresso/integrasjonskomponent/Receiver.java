@@ -18,6 +18,10 @@ public class Receiver {
         return latch;
     }
 
+    public void resetCountDownLatch(){
+        latch = new CountDownLatch(1);
+    }
+
     @JmsListener(destination = "${SENDING_TIL_BANK_QUEUE}")
     public void receive(String message) {
         LOGGER.info("received message='{}'", message);

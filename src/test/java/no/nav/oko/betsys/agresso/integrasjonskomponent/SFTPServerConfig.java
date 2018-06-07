@@ -36,6 +36,7 @@ public class SFTPServerConfig {
             if ((username.equals("admin")) && (password.equals("admin"))) {
                 ClassLoader classLoader = SFTPServerConfig.class.getClassLoader();
                 try {
+
                     sshd.setFileSystemFactory(new VirtualFileSystemFactory(Paths.get(classLoader.getResource(path).toURI())));
                 } catch (URISyntaxException e) {
                     e.printStackTrace();

@@ -18,9 +18,15 @@ public class DLQReceiver {
         return latch;
     }
 
+    public void resetCountDownLatch(){
+        latch = new CountDownLatch(1);
+    }
+
     @JmsListener(destination = "ActiveMQ.DLQ")
     public void receive(String message) {
         LOGGER.info("received message='{}'", message);
         latch.countDown();
     }
+
+
 }

@@ -5,7 +5,10 @@ import no.nav.generer.sbdh.generer.SbdhType;
 import org.apache.activemq.junit.EmbeddedActiveMQBroker;
 import org.apache.camel.test.spring.CamelSpringBootRunner;
 import org.apache.sshd.server.SshServer;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.awaitility.Duration;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -14,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -43,14 +47,24 @@ public class IntegrasjonskomponentITest
     private DLQReceiver dlqReceiver;
 
 
-    private ClassLoader classLoader = IntegrasjonskomponentITest.class.getClassLoader();
-    private URI baseFolder = classLoader.getResource("").toURI();
-    private String mainPath = Paths.get(baseFolder).toString();
+    private static final ClassLoader classLoader = IntegrasjonskomponentITest.class.getClassLoader();
+    private static  URI baseFolder;
 
-    private final String filstiStagingArea= "stagingArea/";
-    private final String filstiTilBetsysUt = "Betsys/srv/nais_apps/q0/naisnfs/out/";
-    private final  String filstiTilAgressoUt = "Agresso/outbound/";
-    private final String filstiTilAgressoInn = "Agresso/inbound/";
+    static {
+        try {
+            baseFolder = classLoader.getResource("").toURI();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static final String mainPath = Paths.get(baseFolder).toString();
+
+    private static final String filstiStagingArea= "stagingArea/";
+    private static final String filstiTilBetsysUt = "Betsys/outbound/";
+    private static final String filstiTilBetsysInn = "Betsys/inbound/";
+    private static final  String filstiTilAgressoUt = "Agresso/outbound/";
+    private static final String filstiTilAgressoInn = "Agresso/inbound/";
 
     private static SshServer agressoServer;
     private static SshServer betsysServer;
@@ -61,11 +75,52 @@ public class IntegrasjonskomponentITest
     @BeforeClass
     public static void setup() throws IOException {
 
+        //TODO build directory path in order to remove empty files in agresso
+
+        Files.createDirectories(Paths.get(mainPath,filstiTilAgressoUt));
+        Files.createDirectories(Paths.get(mainPath,filstiTilAgressoInn));
+        Files.createDirectories(Paths.get(mainPath,filstiTilBetsysUt));
+        Files.createDirectories(Paths.get(mainPath,filstiTilBetsysInn));
         SFTPServerConfig serverConfig = new SFTPServerConfig();
         agressoServer = serverConfig.configure("127.0.0.3",2222, "Agresso");
         betsysServer = serverConfig.configure("127.0.0.2",2222, "Betsys");
         agressoServer.start();
         betsysServer.start();
+
+    }
+
+    @Before
+    public void setUp() throws IOException {
+//        if(agressoServer.isClosed()) agressoServer.start();
+//        if(betsysServer.isClosed()) betsysServer.start();
+//        await().until(() -> (agressoServer.isOpen()));
+//        await().until( () -> betsysServer.isOpen());
+        receiver.resetCountDownLatch();
+        dlqReceiver.resetCountDownLatch();
+    }
+
+    @After
+    public void tearDown(){
+        try{
+            FileUtils.cleanDirectory(Paths.get(mainPath,filstiTilAgressoUt).toFile());
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        try{
+            FileUtils.cleanDirectory(Paths.get(mainPath,filstiTilAgressoInn).toFile());
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        try{
+            FileUtils.cleanDirectory(Paths.get(mainPath,filstiTilBetsysUt).toFile());
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        try{
+            FileUtils.cleanDirectory(Paths.get(mainPath,filstiTilBetsysInn).toFile());
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @ClassRule
@@ -75,22 +130,20 @@ public class IntegrasjonskomponentITest
     @Test
     public void enFilFraAgressoTilBetsys() throws Exception {
         String filnavn = "Agresso_44.lis";
-        Files.copy(Paths.get(classLoader.getResource(filstiStagingArea + filnavn).toURI()), Paths.get(mainPath,filstiTilAgressoUt + filnavn), StandardCopyOption.REPLACE_EXISTING);
-        receiver.getLatch().await(100000, TimeUnit.MILLISECONDS);
+        Files.copy(Paths.get(classLoader.getResource(filstiStagingArea + filnavn).toURI()), Paths.get(mainPath,filstiTilAgressoUt + filnavn));
+        receiver.getLatch().await(120, TimeUnit.SECONDS);
         assertEquals(0, receiver.getLatch().getCount());
         await().atMost(Duration.ONE_MINUTE).until( () ->  classLoader.getResource(filstiTilBetsysUt + filnavn) != null);
         assertNotNull(classLoader.getResource(filstiTilBetsysUt + filnavn));
-        Files.delete(Paths.get(classLoader.getResource(filstiTilBetsysUt + filnavn).toURI()));
     }
 
     @Test
     public void enFilFraBetsysTilAgresso() throws URISyntaxException, IOException {
         String filnavn = "Agresso_45.xml";
-        Files.copy(Paths.get(classLoader.getResource(filstiStagingArea + filnavn).toURI()),Paths.get(mainPath, filstiTilBetsysUt + filnavn) , StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(Paths.get(classLoader.getResource(filstiStagingArea + filnavn).toURI()),Paths.get(mainPath, filstiTilBetsysInn + filnavn));
         sender.send("agresso", SbdhService.opprettStringSBDH(SbdhType.PAIN001,filnavn.replace(".xml", ""), "test","test"));
         await().atMost(Duration.ONE_MINUTE).until( () ->  classLoader.getResource(filstiTilAgressoInn + filnavn) != null);
         assertNotNull(classLoader.getResource(filstiTilAgressoInn + filnavn));
-        Files.delete(Paths.get(classLoader.getResource(filstiTilAgressoInn + filnavn).toURI()));
     }
 
     @Test
@@ -98,11 +151,9 @@ public class IntegrasjonskomponentITest
         //todo sende Alarm ved slik feil
         String filnavn = "feilFil.xml";
         String errorMappe= "/Error/";
-        Files.copy(Paths.get(classLoader.getResource(filstiStagingArea + filnavn).toURI()), Paths.get(mainPath,filstiTilAgressoUt + filnavn), StandardCopyOption.REPLACE_EXISTING);
-        receiver.getLatch().await(100000, TimeUnit.MILLISECONDS);
-        assertEquals(0, receiver.getLatch().getCount());
-        await().atMost(Duration.FIVE_MINUTES).until( () ->  classLoader.getResource(filstiTilAgressoUt + errorMappe + filnavn) != null);
-        Files.delete(Paths.get(classLoader.getResource(filstiTilAgressoUt + errorMappe + filnavn).toURI()));
+        Files.copy(Paths.get(classLoader.getResource(filstiStagingArea + filnavn).toURI()), Paths.get(mainPath,filstiTilAgressoUt + filnavn));
+        await().atMost(Duration.ONE_MINUTE).until( () ->  classLoader.getResource(filstiTilAgressoUt + errorMappe + filnavn) != null);
+        assertNotNull(classLoader.getResource(filstiTilAgressoUt + errorMappe + filnavn));
     }
 
     @Test
@@ -110,7 +161,7 @@ public class IntegrasjonskomponentITest
         //TODO sende alarm
         String filnavn = "noeTull.xml";
         sender.send("agresso", SbdhService.opprettStringSBDH(SbdhType.PAIN001,filnavn.replace(".xml", ""), "test","test"));
-        dlqReceiver.getLatch().await(500000, TimeUnit.MILLISECONDS);
+        dlqReceiver.getLatch().await(120, TimeUnit.SECONDS);
         assertEquals(0, dlqReceiver.getLatch().getCount());
     }
     @Test
@@ -131,11 +182,23 @@ public class IntegrasjonskomponentITest
     }
     @Test
     public void manglendeKontaktMedAgressoFilserver(){
-        //TODO implement test
+
     }
     @Test
-    public void manglendeKontaktMedBetsysFilserver(){
-        //TODO implement test
+    public void manglendeKontaktMedBetsysFilserver() throws InterruptedException, URISyntaxException, IOException {
+        //TODO sett opp retry her? eller i hvert fall alarm om feil
+        betsysServer.stop(true);
+        String filnavn = "Agresso_45.lis";
+        String errorMappe= "/Error/";
+        Files.copy(Paths.get(classLoader.getResource(filstiStagingArea + filnavn).toURI()), Paths.get(mainPath,filstiTilAgressoUt + filnavn), StandardCopyOption.REPLACE_EXISTING);
+        dlqReceiver.getLatch().await(120, TimeUnit.SECONDS);
+        assertEquals(1, dlqReceiver.getLatch().getCount());
+        await().atMost(Duration.ONE_MINUTE).until( () ->  classLoader.getResource(filstiTilAgressoUt + errorMappe + filnavn) != null);
+        assertNotNull(classLoader.getResource(filstiTilAgressoUt + errorMappe + filnavn) != null);
+
+        betsysServer.start();
+
+
     }
     @Test
     public void fullDiskPaaAgressoFilserver(){
