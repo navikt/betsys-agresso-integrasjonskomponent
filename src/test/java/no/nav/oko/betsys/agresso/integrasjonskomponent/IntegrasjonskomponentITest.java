@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -29,11 +28,10 @@ import java.util.concurrent.TimeUnit;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
 @RunWith(CamelSpringBootRunner.class)
 @DirtiesContext
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT, classes = JmsTestConfig.class)
+@SpringBootTest(classes = JmsTestConfig.class)
 public class IntegrasjonskomponentITest
 {
 
@@ -69,7 +67,7 @@ public class IntegrasjonskomponentITest
     private static SshServer agressoServer;
     private static SshServer betsysServer;
 
-    public IntegrasjonskomponentITest() throws URISyntaxException {
+    public IntegrasjonskomponentITest(){
     }
 
     @BeforeClass
