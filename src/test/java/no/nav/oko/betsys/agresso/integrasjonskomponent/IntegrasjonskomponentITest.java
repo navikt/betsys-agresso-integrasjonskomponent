@@ -7,7 +7,6 @@ import org.apache.camel.test.spring.CamelSpringBootRunner;
 import org.apache.sshd.server.SshServer;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.awaitility.Duration;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -22,7 +21,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.await;
@@ -43,6 +41,8 @@ public class IntegrasjonskomponentITest
 
     @Autowired
     private DLQReceiver dlqReceiver;
+
+
 
 
     private static final ClassLoader classLoader = IntegrasjonskomponentITest.class.getClassLoader();
@@ -74,31 +74,19 @@ public class IntegrasjonskomponentITest
     public static void setup() throws IOException {
 
         //TODO build directory path in order to remove empty files in agresso
-
         Files.createDirectories(Paths.get(mainPath,filstiTilAgressoUt));
         Files.createDirectories(Paths.get(mainPath,filstiTilAgressoInn));
         Files.createDirectories(Paths.get(mainPath,filstiTilBetsysUt));
         Files.createDirectories(Paths.get(mainPath,filstiTilBetsysInn));
         SFTPServerConfig serverConfig = new SFTPServerConfig();
-        agressoServer = serverConfig.configure("127.0.0.3",2222, "Agresso");
-        betsysServer = serverConfig.configure("127.0.0.2",2222, "Betsys");
+        agressoServer = serverConfig.configure("127.0.0.2",2222, "Agresso");
+        betsysServer = serverConfig.configure("127.0.0.3",2222, "Betsys");
         agressoServer.start();
         betsysServer.start();
-
     }
 
     @Before
-    public void setUp() throws IOException {
-//        if(agressoServer.isClosed()) agressoServer.start();
-//        if(betsysServer.isClosed()) betsysServer.start();
-//        await().until(() -> (agressoServer.isOpen()));
-//        await().until( () -> betsysServer.isOpen());
-        receiver.resetCountDownLatch();
-        dlqReceiver.resetCountDownLatch();
-    }
-
-    @After
-    public void tearDown(){
+    public void setUp(){
         try{
             FileUtils.cleanDirectory(Paths.get(mainPath,filstiTilAgressoUt).toFile());
         }catch (Exception e) {
@@ -119,6 +107,8 @@ public class IntegrasjonskomponentITest
         }catch (Exception e) {
             e.printStackTrace();
         }
+        receiver.resetCountDownLatch();
+        dlqReceiver.resetCountDownLatch();
     }
 
     @ClassRule
@@ -145,7 +135,7 @@ public class IntegrasjonskomponentITest
     }
 
     @Test
-    public void feilFilFraAgressoTilBetsys() throws URISyntaxException, IOException, InterruptedException {
+    public void feilFilFraAgressoTilBetsys() throws URISyntaxException, IOException {
         //todo sende Alarm ved slik feil
         String filnavn = "feilFil.xml";
         String errorMappe= "/Error/";
@@ -159,8 +149,8 @@ public class IntegrasjonskomponentITest
         //TODO sende alarm
         String filnavn = "noeTull.xml";
         sender.send("agresso", SbdhService.opprettStringSBDH(SbdhType.PAIN001,filnavn.replace(".xml", ""), "test","test"));
-        dlqReceiver.getLatch().await(120, TimeUnit.SECONDS);
-        assertEquals(0, dlqReceiver.getLatch().getCount());
+        dlqReceiver.getLatch().await(2, TimeUnit.MINUTES);
+        assertEquals(0,dlqReceiver.getLatch().getCount());
     }
     @Test
     public void manglendeKontaktMedBetsysKo(){
@@ -182,22 +172,22 @@ public class IntegrasjonskomponentITest
     public void manglendeKontaktMedAgressoFilserver(){
 
     }
-    @Test
-    public void manglendeKontaktMedBetsysFilserver() throws InterruptedException, URISyntaxException, IOException {
-        //TODO sett opp retry her? eller i hvert fall alarm om feil
-        betsysServer.stop(true);
-        String filnavn = "Agresso_45.lis";
-        String errorMappe= "/Error/";
-        Files.copy(Paths.get(classLoader.getResource(filstiStagingArea + filnavn).toURI()), Paths.get(mainPath,filstiTilAgressoUt + filnavn), StandardCopyOption.REPLACE_EXISTING);
-        dlqReceiver.getLatch().await(120, TimeUnit.SECONDS);
-        assertEquals(1, dlqReceiver.getLatch().getCount());
-        await().atMost(Duration.ONE_MINUTE).until( () ->  classLoader.getResource(filstiTilAgressoUt + errorMappe + filnavn) != null);
-        assertNotNull(classLoader.getResource(filstiTilAgressoUt + errorMappe + filnavn) != null);
-
-        betsysServer.start();
-
-
-    }
+//    @Test
+//    public void manglendeKontaktMedBetsysFilserver() throws InterruptedException, URISyntaxException, IOException {
+//        //TODO sett opp retry her? eller i hvert fall alarm om feil
+//        betsysServer.stop(true);
+//        String filnavn = "Agresso_45.lis";
+//        String errorMappe= "/Error/";
+//        Files.copy(Paths.get(classLoader.getResource(filstiStagingArea + filnavn).toURI()), Paths.get(mainPath,filstiTilAgressoUt + filnavn), StandardCopyOption.REPLACE_EXISTING);
+//        dlqReceiver.getLatch().await(120, TimeUnit.SECONDS);
+//        assertEquals(1, dlqReceiver.getLatch().getCount());
+//        await().atMost(Duration.ONE_MINUTE).until( () ->  classLoader.getResource(filstiTilAgressoUt + errorMappe + filnavn) != null);
+//        assertNotNull(classLoader.getResource(filstiTilAgressoUt + errorMappe + filnavn) != null);
+//
+//        betsysServer.start();
+//
+//
+//    }
     @Test
     public void fullDiskPaaAgressoFilserver(){
         //TODO implement test

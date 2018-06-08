@@ -24,8 +24,9 @@ public class DLQReceiver {
 
     @JmsListener(destination = "ActiveMQ.DLQ")
     public void receive(String message) {
-        LOGGER.info("received message='{}'", message);
         latch.countDown();
+        LOGGER.info("received message='{}'", message);
+
     }
 
 
