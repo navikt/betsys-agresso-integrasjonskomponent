@@ -80,7 +80,7 @@ public class IntegrasjonskomponentITest
         Files.createDirectories(Paths.get(mainPath,filstiTilBetsysInn));
         SFTPServerConfig serverConfig = new SFTPServerConfig();
         agressoServer = serverConfig.configure("127.0.0.4",2222, "Agresso");
-        betsysServer = serverConfig.configure("127.0.0.3",2222, "Betsys");
+        betsysServer = serverConfig.configure("127.0.0.5",2222, "Betsys");
         agressoServer.start();
         betsysServer.start();
     }
