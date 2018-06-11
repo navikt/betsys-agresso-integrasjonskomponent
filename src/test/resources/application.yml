@@ -27,7 +27,7 @@ BETSYSPASSWORD: admin
 SENDING_TIL_BANK_QUEUE: betsys
 SENDING_TIL_AGRESSO_QUEUE: agresso
 
-PORT: 2222
+PORT: 4696
 
 activemq:
   broker-url: vm://embedded-broker?create=false
