@@ -77,7 +77,7 @@ pipeline {
 
                     def response = httpRequest([
                             url                   : "https://jira.adeo.no/rest/api/2/issue/",
-                            authentication        : "nais-user",
+                            authentication        : "srvOkoAutodeploy",
                             consoleLogResponseBody: true,
                             contentType           : "APPLICATION_JSON",
                             httpMode              : "POST",
