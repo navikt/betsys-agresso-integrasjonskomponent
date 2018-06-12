@@ -6,22 +6,9 @@ pipeline {
         maven 'default'
     }
     environment {
-        FASIT_ENV = 't1'
-        ZONE = 'fss'
-        APPLICATION_NAMESPACE = 'default'
-        APPLICATION_FASIT_NAME = 'betsys-agresso-integrasjonskomponent'
+        LDAP_URL="ldapgw.test.local"
     }
     stages {
-        stage('setup') {
-            steps {
-                script {
-                    commitHashShort = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
-                    pom = readMavenPom file: 'pom.xml'
-                    applicationVersion = "${pom.version}.${env.BUILD_ID}-${commitHashShort}"
-                    applicationFullName = "${env.APPLICATION_FASIT_NAME}:${applicationVersion}"
-                }
-            }
-        }
         stage('build') {
             steps {
                 sh 'mvn -B -DskipTests clean package'
@@ -58,36 +45,36 @@ pipeline {
         stage('deploy to nais') {
             steps {
                 script {
-                    def postBody = [
-                            fields: [
-                                    project          : [key: "DEPLOY"],
-                                    issuetype        : [id: "14302"],
-                                    customfield_14811: [value: "${env.FASIT_ENV}"],
-                                    customfield_14812: "${applicationFullName}",
-                                    customfield_17410: "${env.BUILD_URL}input/Deploy/",
-                                    customfield_19015: [id: "22707", value: "Yes"],
-                                    customfield_19413: "${env.APPLICATION_NAMESPACE}",
-                                    customfield_19610: [value: "${env.ZONE}"],
-                                    summary          : "Automatisk deploy av ${applicationFullName} til ${env.FASIT_ENV}"
-                            ]
-                    ]
-                    def jiraPayload = groovy.json.JsonOutput.toJson(postBody)
+                    withCredentials([[$class: "UsernamePasswordMultiBinding", credentialsId: 'nais-user2', usernameVariable: "NAIS_USERNAME", passwordVariable: "NAIS_PASSWORD"]]) {
+                        def postBody = [
+                                application: "betsys-agresso-integrasjonskomponent",
+                                fasitEnvironment: "t1",
+                                version    : "1.0.${env.BUILD_ID}",
+                                fasitUsername   : "${env.NAIS_USERNAME}",
+                                fasitPassword   : "${env.NAIS_PASSWORD}",
+                                zone       : "fss",
+                                namespace  : "default"
+                        ]
+                        def naisdPayload = groovy.json.JsonOutput.toJson(postBody)
 
-                    echo jiraPayload
+                        echo naisdPayload
 
-                    def response = httpRequest([
-                            url                   : "https://jira.adeo.no/rest/api/2/issue/",
-                            authentication        : "srvOkoAutodeploy",
-                            consoleLogResponseBody: true,
-                            contentType           : "APPLICATION_JSON",
-                            httpMode              : "POST",
-                            requestBody           : jiraPayload
-                    ])
+                        def response = httpRequest([
+                                url                   : "https://daemon.nais.preprod.local/deploy",
+                                consoleLogResponseBody: true,
+                                contentType           : "APPLICATION_JSON",
+                                httpMode              : "POST",
+                                requestBody           : naisdPayload,
+                                ignoreSslErrors       : true
+                        ])
 
                         echo "$response.status: $response.content"
 
-                    def jiraIssueId = readJSON([text: response.content])["key"]
-                    currentBuild.description = "Waiting for <a href=\"https://jira.adeo.no/browse/$jiraIssueId\">${jiraIssueId}</a>"
+                        if (response.status != 200) {
+                            currentBuild.description = "Failed - $response.content"
+                            currentBuild.result = "FAILED"
+                        }
+                    }
                 }
             }
         }
