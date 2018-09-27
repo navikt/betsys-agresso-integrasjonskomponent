@@ -20,7 +20,7 @@ public class AgressoTilBetsysRoute extends SpringRouteBuilder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AgressoTilBetsysRoute.class);
 
-    private static final String SFTP_OPTIONS = "&useUserKnownHostsFile=false&initialDelay=15000&maxMessagesPerPoll=1&delay=15000&move=Arkiv&moveFailed=Error";
+    private static final String SFTP_OPTIONS = "&useUserKnownHostsFile=false&initialDelay=15000&maxMessagesPerPoll=1&delay=15000&move=Arkiv&readLock=changed";
 
     @Value("${SFTPUSERNAME}")
     private String agressoSftpUsername;
@@ -62,7 +62,7 @@ public class AgressoTilBetsysRoute extends SpringRouteBuilder {
                 .to("validator:file:pain.001.001.03.xsd")
                 .to(betsysSftpPath)
                 .process(exchange -> {
-                  String filename = exchange.getIn().getHeader("CamelFileNameOnly", String.class).replace(".lis", "");
+                  String filename = exchange.getIn().getHeader("CamelFileNameOnly", String.class).replace(".xml", "");
                   exchange.getOut().setBody(
                             SbdhService.opprettStringSBDH(SbdhType.PAIN001,filename,"test", "test"));
                     }
