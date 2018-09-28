@@ -113,15 +113,15 @@ public class IntegrasjonskomponentITest
     public static EmbeddedActiveMQBroker broker = new EmbeddedActiveMQBroker();
 
 
-//    @Test
-//    public void enFilFraAgressoTilBetsys() throws Exception {
-//        String filnavn = "Agresso_44.xml";
-//        Files.copy(Paths.get(classLoader.getResource(filstiStagingArea + filnavn).toURI()), Paths.get(mainPath,filstiTilAgressoUt + filnavn));
-//        receiver.getLatch().await(120, TimeUnit.SECONDS);
-//        assertEquals(0, receiver.getLatch().getCount());
-//        await().atMost(Duration.ONE_MINUTE).until( () ->  classLoader.getResource(filstiTilBetsysUt + filnavn) != null);
-//        assertNotNull(classLoader.getResource(filstiTilBetsysUt + filnavn));
-//    }
+    @Test
+    public void enFilFraAgressoTilBetsys() throws Exception {
+        String filnavn = "Agresso_44.xml";
+        Files.copy(Paths.get(classLoader.getResource(filstiStagingArea + filnavn).toURI()), Paths.get(mainPath,filstiTilAgressoUt + filnavn));
+        receiver.getLatch().await(120, TimeUnit.SECONDS);
+        assertEquals(0, receiver.getLatch().getCount());
+        await().atMost(Duration.ONE_MINUTE).until( () ->  classLoader.getResource(filstiTilBetsysUt + filnavn) != null);
+        assertNotNull(classLoader.getResource(filstiTilBetsysUt + filnavn));
+    }
 
     @Test
     public void enFilFraBetsysTilAgresso() throws URISyntaxException, IOException {

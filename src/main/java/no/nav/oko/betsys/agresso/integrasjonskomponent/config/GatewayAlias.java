@@ -2,7 +2,7 @@ package no.nav.oko.betsys.agresso.integrasjonskomponent.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties("MQGATEWAY01")
+@ConfigurationProperties(value = "mqgateway01")
 public class GatewayAlias {
 
     private String hostname;

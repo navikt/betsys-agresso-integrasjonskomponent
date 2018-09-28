@@ -19,7 +19,7 @@ healthcheck:
     failureThreshold: 30
 prometheus:
   enabled: true
-  path: /prometheus
+  path: /actuator/prometheus
 ingress:
   enabled: true
 resources:

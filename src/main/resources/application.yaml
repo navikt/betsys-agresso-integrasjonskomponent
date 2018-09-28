@@ -9,9 +9,10 @@ info:
     version: '@project.version@'
 
 management:
-  security:
-    enabled: false
-
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 camel:
   springboot:
     main-run-controller: true
