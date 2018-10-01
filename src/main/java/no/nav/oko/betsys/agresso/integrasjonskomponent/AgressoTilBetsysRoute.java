@@ -1,6 +1,7 @@
 package no.nav.oko.betsys.agresso.integrasjonskomponent;
 
 
+import io.micrometer.core.instrument.MeterRegistry;
 import no.nav.generer.sbdh.SbdhService;
 import no.nav.generer.sbdh.generer.SbdhType;
 import org.apache.camel.Exchange;
@@ -43,6 +44,12 @@ public class AgressoTilBetsysRoute extends SpringRouteBuilder {
     @Value("${PORT}")
     private String port;
 
+    private MeterRegistry registry;
+
+    public AgressoTilBetsysRoute(MeterRegistry registry){
+        this.registry = registry;
+    }
+
     @Override
     public void configure() {
         String agressoOutbound = getOutboundAgressoSftpPath(agressoSftpUrl, agressoSftpUsername, agressoSftpPassword);
@@ -68,7 +75,8 @@ public class AgressoTilBetsysRoute extends SpringRouteBuilder {
                     }
                 )
                 .to("ref:betsysUt")
-                .process(exchange -> agressoCounter.labels(PROCESS_AGRESSO, "Fil kopiert til Betsys").inc())
+               // .process(exchange -> agressoCounter.labels(PROCESS_AGRESSO, "Fil kopiert til Betsys").inc())
+                .process(exchange -> registry.get("agresso_total_counter").counter().increment())
                 .end();
     }
 
