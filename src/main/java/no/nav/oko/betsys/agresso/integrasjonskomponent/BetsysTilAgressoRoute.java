@@ -68,7 +68,6 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
                 .log("Lest fil med navn: ${body} fra Betsys til Agresso")
                 .pollEnrich().simple(betsysSftpPath + "&fileName=${body}" + XML_SUFFIX).timeout(POLL_TIMEOUT)
                 .to(agressoInbound)
-               // .log("Lest fil med navn: ${body} fra Betsys til Agresso")
                 .log("Fil med navn:  ${header.CamelFileNameOnly} ferdig kopiert fra Betsys til Agresso")
                 .to("micrometer:timer:betsys.to.agresso.timer?action=stop")
                 .end();
