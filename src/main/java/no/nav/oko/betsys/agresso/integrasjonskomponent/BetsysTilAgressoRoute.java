@@ -54,7 +54,7 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
         errorHandler(defaultErrorHandler()
                 .onExceptionOccurred(exchange -> {
                     Throwable exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Throwable.class);
-                    registry.counter("agresso_exception_total_counter", exception.getClass().getSimpleName() ).increment();
+                    registry.counter("betsys_to_agresso_exception_counter", exception.getClass().getSimpleName() ).increment();
 
                 })
         );

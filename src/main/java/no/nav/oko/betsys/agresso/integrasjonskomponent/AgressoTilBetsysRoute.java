@@ -56,7 +56,7 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
         errorHandler(defaultErrorHandler()
                 .onExceptionOccurred(exchange -> {
                     Throwable exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Throwable.class);
-                    registry.counter("agresso_exception_total_counter", "Exception" , exception.getClass().getSimpleName() ).increment();
+                    registry.counter("agresso_to_betsys_exception_counter", "Exception" , exception.getClass().getSimpleName() ).increment();
                         })
         );
         from(agressoOutbound + SFTP_OPTIONS)
