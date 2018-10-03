@@ -70,6 +70,7 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
                   String filename = exchange.getIn().getHeader("CamelFileNameOnly", String.class).replace(".xml", "");
                   exchange.getOut().setBody(
                             SbdhService.opprettStringSBDH(SbdhType.PAIN001,filename,"test", "test"));
+                  exchange.getOut().setHeader("CamelFileNameOnly", filename);
                     }
                 )
                 .to("ref:betsysUt")

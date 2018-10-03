@@ -65,9 +65,11 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
                 .to("micrometer:timer:betsys.to.agresso.timer?action=start")
                 .split(xpath("//n:DocumentIdentification/n:InstanceIdentifier/text()")
                         .namespace("n", "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader"))
-                .log("Henter fil fra Betsys med navn: ${body}")
+                .log("Lest fil med navn: ${body} fra Betsys til Agresso")
                 .pollEnrich().simple(betsysSftpPath + "&fileName=${body}" + XML_SUFFIX).timeout(POLL_TIMEOUT)
                 .to(agressoInbound)
+               // .log("Lest fil med navn: ${body} fra Betsys til Agresso")
+                .log("Fil med navn:  ${header.CamelFileNameOnly} ferdig kopiert fra Betsys til Agresso")
                 .to("micrometer:timer:betsys.to.agresso.timer?action=stop")
                 .end();
     }
