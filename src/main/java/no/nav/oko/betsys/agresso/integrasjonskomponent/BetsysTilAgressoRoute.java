@@ -62,13 +62,13 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
         from("ref:betsysInn")
                 .routeId("KopierFilFraBetsys")
                 .to("micrometer:counter:betsys.to.agresso.total.counter")
-                .to("micrometer:timer:betsys.to.aggresso.timer?action=start")
+                .to("micrometer:timer:betsys.to.agresso.timer?action=start")
                 .split(xpath("//n:DocumentIdentification/n:InstanceIdentifier/text()")
                         .namespace("n", "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader"))
                 .log("Henter fil fra Betsys med navn: ${body}")
                 .pollEnrich().simple(betsysSftpPath + "&fileName=${body}" + XML_SUFFIX).timeout(POLL_TIMEOUT)
                 .to(agressoInbound)
-                .to("micrometer:timer:betsys.to.aggresso.timer?action=stop")
+                .to("micrometer:timer:betsys.to.agresso.timer?action=stop")
                 .end();
     }
 

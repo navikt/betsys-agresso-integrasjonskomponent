@@ -56,14 +56,14 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
         errorHandler(defaultErrorHandler()
                 .onExceptionOccurred(exchange -> {
                     Throwable exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Throwable.class);
-                    registry.counter("agresso_exception_total_counter", exception.getClass().getSimpleName() ).increment();
+                    registry.counter("agresso_exception_total_counter", "Exception" , exception.getClass().getSimpleName() ).increment();
                         })
         );
         from(agressoOutbound + SFTP_OPTIONS)
                 .routeId("KopierFilFraAgresso")
                 .log("Lest fil med navn: ${header.CamelFileNameOnly} fra Agresso")
                 .to("micrometer:counter:agresso.to.betsys.total.counter")
-                .to("micrometer:timer:aggresso.to.betsys.timer?action=start")
+                .to("micrometer:timer:agresso.to.betsys.timer?action=start")
                 .to("validator:file:pain.001.001.03.xsd")
                 .to(betsysSftpPath)
                 .process(exchange -> {
@@ -74,7 +74,7 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
                 )
                 .to("ref:betsysUt")
                 .log("Fil med navn: ${header.CamelFileNameOnly} ferdig kopiert fra Agresso til Betsys")
-                .to("micrometer:timer:aggresso.to.betsys.timer?action=stop")
+                .to("micrometer:timer:agresso.to.betsys.timer?action=stop")
                 .end();
     }
 
