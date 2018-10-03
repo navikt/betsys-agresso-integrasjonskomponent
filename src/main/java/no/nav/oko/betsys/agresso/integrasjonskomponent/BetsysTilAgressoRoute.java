@@ -1,17 +1,12 @@
 package no.nav.oko.betsys.agresso.integrasjonskomponent;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.spring.SpringRouteBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import static no.nav.oko.betsys.agresso.integrasjonskomponent.config.PrometheusLabels.LABEL_TECHNICAL_EXCEPTION;
-import static no.nav.oko.betsys.agresso.integrasjonskomponent.config.PrometheusLabels.PROCESS_BETSYS;
-import static no.nav.oko.betsys.agresso.integrasjonskomponent.config.PrometheusMetrics.betsysCounter;
-import static no.nav.oko.betsys.agresso.integrasjonskomponent.config.PrometheusMetrics.exceptionCounter;
 
 @Service
 public class BetsysTilAgressoRoute extends RouteBuilder {
@@ -42,6 +37,12 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
     @Value("${PORT}")
     private String port;
 
+    private MeterRegistry registry;
+
+    public  BetsysTilAgressoRoute(MeterRegistry registry){
+        this.registry = registry;
+    }
+
 
     @Override
     public void configure() {
@@ -53,7 +54,8 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
         errorHandler(defaultErrorHandler()
                 .onExceptionOccurred(exchange -> {
                     Throwable exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Throwable.class);
-               //     exceptionCounter.labels(PROCESS_BETSYS, LABEL_TECHNICAL_EXCEPTION, exception.getClass().getSimpleName()).inc();
+                    registry.counter("agresso_exception_total_counter", exception.getClass().getSimpleName() ).increment();
+
                 })
         );
 
@@ -66,7 +68,6 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
                 .log("Henter fil fra Betsys med navn: ${body}")
                 .pollEnrich().simple(betsysSftpPath + "&fileName=${body}" + XML_SUFFIX).timeout(POLL_TIMEOUT)
                 .to(agressoInbound)
-               // .process(exchange -> betsysCounter.labels(PROCESS_BETSYS, "Fil kopiert til Agresso"))
                 .to("micrometer:timer:betsys.to.aggresso.timer?action=stop")
                 .end();
     }

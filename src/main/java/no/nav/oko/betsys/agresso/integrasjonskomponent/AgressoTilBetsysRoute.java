@@ -6,16 +6,11 @@ import no.nav.generer.sbdh.SbdhService;
 import no.nav.generer.sbdh.generer.SbdhType;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.spring.SpringRouteBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import static no.nav.oko.betsys.agresso.integrasjonskomponent.config.PrometheusLabels.LABEL_TECHNICAL_EXCEPTION;
-import static no.nav.oko.betsys.agresso.integrasjonskomponent.config.PrometheusLabels.PROCESS_AGRESSO;
-import static no.nav.oko.betsys.agresso.integrasjonskomponent.config.PrometheusMetrics.agressoCounter;
-import static no.nav.oko.betsys.agresso.integrasjonskomponent.config.PrometheusMetrics.exceptionCounter;
 
 @Service
 public class AgressoTilBetsysRoute extends RouteBuilder {
@@ -61,12 +56,12 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
         errorHandler(defaultErrorHandler()
                 .onExceptionOccurred(exchange -> {
                     Throwable exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Throwable.class);
-                    exceptionCounter.labels(PROCESS_AGRESSO, LABEL_TECHNICAL_EXCEPTION, exception.getClass().getSimpleName()).inc();
+                    registry.counter("agresso_exception_total_counter", exception.getClass().getSimpleName() ).increment();
                         })
         );
         from(agressoOutbound + SFTP_OPTIONS)
                 .routeId("KopierFilFraAgresso")
-                .log("Lest fil med navn: ${header.CamelFileNameOnly}")
+                .log("Lest fil med navn: ${header.CamelFileNameOnly} fra Agresso")
                 .to("micrometer:counter:agresso.to.betsys.total.counter")
                 .to("micrometer:timer:aggresso.to.betsys.timer?action=start")
                 .to("validator:file:pain.001.001.03.xsd")
@@ -78,8 +73,7 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
                     }
                 )
                 .to("ref:betsysUt")
-               // .process(exchange -> agressoCounter.labels(PROCESS_AGRESSO, "Fil kopiert til Betsys").inc())
-                .process(exchange -> registry.get("agresso_total_counter").counter().increment())
+                .log("Fil med navn: ${header.CamelFileNameOnly} ferdig kopiert fra Agresso til Betsys")
                 .to("micrometer:timer:aggresso.to.betsys.timer?action=stop")
                 .end();
     }
