@@ -25,6 +25,5 @@ public class MicrometerMetrics {
                 .description("Counts total number of files copied from Agresso to Betsys")
                 .tags(LABEL_PROCESS, LABEL_EVENT)
                 .register(registry);
-
     }
 }

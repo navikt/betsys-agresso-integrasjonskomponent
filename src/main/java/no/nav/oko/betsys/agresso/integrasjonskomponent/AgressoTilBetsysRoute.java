@@ -5,6 +5,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import no.nav.generer.sbdh.SbdhService;
 import no.nav.generer.sbdh.generer.SbdhType;
 import org.apache.camel.Exchange;
+import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.spring.SpringRouteBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,7 @@ import static no.nav.oko.betsys.agresso.integrasjonskomponent.config.PrometheusM
 import static no.nav.oko.betsys.agresso.integrasjonskomponent.config.PrometheusMetrics.exceptionCounter;
 
 @Service
-public class AgressoTilBetsysRoute extends SpringRouteBuilder {
+public class AgressoTilBetsysRoute extends RouteBuilder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AgressoTilBetsysRoute.class);
 
@@ -66,6 +67,8 @@ public class AgressoTilBetsysRoute extends SpringRouteBuilder {
         from(agressoOutbound + SFTP_OPTIONS)
                 .routeId("KopierFilFraAgresso")
                 .log("Lest fil med navn: ${header.CamelFileNameOnly}")
+                .to("micrometer:counter:agresso.to.betsys.total.counter")
+                .to("micrometer:timer:aggresso.to.betsys.timer?action=start")
                 .to("validator:file:pain.001.001.03.xsd")
                 .to(betsysSftpPath)
                 .process(exchange -> {
@@ -77,6 +80,7 @@ public class AgressoTilBetsysRoute extends SpringRouteBuilder {
                 .to("ref:betsysUt")
                // .process(exchange -> agressoCounter.labels(PROCESS_AGRESSO, "Fil kopiert til Betsys").inc())
                 .process(exchange -> registry.get("agresso_total_counter").counter().increment())
+                .to("micrometer:timer:aggresso.to.betsys.timer?action=stop")
                 .end();
     }
 

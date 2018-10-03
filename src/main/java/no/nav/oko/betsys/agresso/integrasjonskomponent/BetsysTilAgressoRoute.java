@@ -1,6 +1,7 @@
 package no.nav.oko.betsys.agresso.integrasjonskomponent;
 
 import org.apache.camel.Exchange;
+import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.spring.SpringRouteBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,7 @@ import static no.nav.oko.betsys.agresso.integrasjonskomponent.config.PrometheusM
 import static no.nav.oko.betsys.agresso.integrasjonskomponent.config.PrometheusMetrics.exceptionCounter;
 
 @Service
-public class BetsysTilAgressoRoute extends SpringRouteBuilder {
+public class BetsysTilAgressoRoute extends RouteBuilder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BetsysTilAgressoRoute.class);
 
@@ -52,18 +53,21 @@ public class BetsysTilAgressoRoute extends SpringRouteBuilder {
         errorHandler(defaultErrorHandler()
                 .onExceptionOccurred(exchange -> {
                     Throwable exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Throwable.class);
-                    exceptionCounter.labels(PROCESS_BETSYS, LABEL_TECHNICAL_EXCEPTION, exception.getClass().getSimpleName()).inc();
+               //     exceptionCounter.labels(PROCESS_BETSYS, LABEL_TECHNICAL_EXCEPTION, exception.getClass().getSimpleName()).inc();
                 })
         );
 
         from("ref:betsysInn")
                 .routeId("KopierFilFraBetsys")
+                .to("micrometer:counter:betsys.to.agresso.total.counter")
+                .to("micrometer:timer:betsys.to.aggresso.timer?action=start")
                 .split(xpath("//n:DocumentIdentification/n:InstanceIdentifier/text()")
                         .namespace("n", "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader"))
                 .log("Henter fil fra Betsys med navn: ${body}")
                 .pollEnrich().simple(betsysSftpPath + "&fileName=${body}" + XML_SUFFIX).timeout(POLL_TIMEOUT)
                 .to(agressoInbound)
-                .process(exchange -> betsysCounter.labels(PROCESS_BETSYS, "Fil kopiert til Agresso"))
+               // .process(exchange -> betsysCounter.labels(PROCESS_BETSYS, "Fil kopiert til Agresso"))
+                .to("micrometer:timer:betsys.to.aggresso.timer?action=stop")
                 .end();
     }
 
