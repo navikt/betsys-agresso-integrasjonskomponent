@@ -41,13 +41,7 @@ fasitResources:
     resourceType: queue
     propertyMap:
       queueName: SENDING_TIL_AGRESSO_QUEUE
-#  - alias: betsys_SENDING_TIL_AGRESSOVL
-#    resourceType: queue
-#  - alias: betsys_SENDING_TIL_BANK
-#    resourceType: queue
-#    propertyMap:
-#      queueName: SENDING_TIL_BANK_QUEUE
-  - alias: betsys-agresso-integrasjonskomponent_testqueue
+  - alias: betsys_SENDING_TIL_BANK
     resourceType: queue
     propertyMap:
       queueName: SENDING_TIL_BANK_QUEUE
