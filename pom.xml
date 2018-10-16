@@ -20,7 +20,7 @@
         <activemq-version>5.15.4</activemq-version>
         <activemq-junit-version>5.15.4</activemq-junit-version>
         <awaitility.version>3.1.0</awaitility.version>
-        <iso20022-sbdh-version>13.0.3</iso20022-sbdh-version>
+        <iso20022-sbdh-version>13.0.10</iso20022-sbdh-version>
         <sshd-core-version>1.7.0</sshd-core-version>
         <slf4j-version>1.7.25</slf4j-version>
     </properties>
@@ -60,6 +60,12 @@
             <groupId>iso20022</groupId>
             <artifactId>iso20022-sbdh</artifactId>
             <version>${iso20022-sbdh-version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Monitoring -->
@@ -122,19 +128,9 @@
 
         <!-- Logging -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j-version}</version>
-        </dependency>
-        <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
-            <version>4.10</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>log4j-over-slf4j</artifactId>
-            <version>${slf4j-version}</version>
+            <version>5.2</version>
         </dependency>
 
         <!-- Test -->

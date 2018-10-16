@@ -17,7 +17,7 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AgressoTilBetsysRoute.class);
 
-    private static final String SFTP_OPTIONS = "&useUserKnownHostsFile=false&initialDelay=15000&maxMessagesPerPoll=1&delay=15000&move=Arkiv&readLock=changed";
+    private static final String SFTP_OPTIONS = "&useUserKnownHostsFile=false&initialDelay=15000&maxMessagesPerPoll=1&delay=15000&move=Arkiv&readLock=changed&bridgeErrorHandler=true&throwExceptionOnConnectFailed=true";
 
     @Value("${SFTPUSERNAME}")
     private String agressoSftpUsername;

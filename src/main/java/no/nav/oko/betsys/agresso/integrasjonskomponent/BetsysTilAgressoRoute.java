@@ -13,6 +13,8 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BetsysTilAgressoRoute.class);
 
+    private static final String SFTP_OPTIONS = "&bridgeErrorHandler=true";
+
     private static final String XML_SUFFIX = ".xml";
     private static final long POLL_TIMEOUT = 10000;
 
@@ -54,8 +56,7 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
         errorHandler(defaultErrorHandler()
                 .onExceptionOccurred(exchange -> {
                     Throwable exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Throwable.class);
-                    registry.counter("betsys_to_agresso_exception_counter", exception.getClass().getSimpleName() ).increment();
-
+                    registry.counter("betsys_to_agresso_exception_counter", "Exception" , exception.getClass().getSimpleName() ).increment();
                 })
         );
 
@@ -65,8 +66,8 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
                 .to("micrometer:timer:betsys.to.agresso.timer?action=start")
                 .split(xpath("//n:DocumentIdentification/n:InstanceIdentifier/text()")
                         .namespace("n", "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader"))
-                .log("Lest fil med navn: ${body} fra Betsys til Agresso")
-                .pollEnrich().simple(betsysSftpPath + "&fileName=${body}" + XML_SUFFIX).timeout(POLL_TIMEOUT)
+                .log("Forsøker å lese fil med navn: ${body} fra Betsys til Agresso")
+                .pollEnrich().simple(betsysSftpPath + SFTP_OPTIONS + "&fileName=${body}" + XML_SUFFIX).timeout(POLL_TIMEOUT)
                 .to(agressoInbound)
                 .log("Fil med navn:  ${header.CamelFileNameOnly} ferdig kopiert fra Betsys til Agresso")
                 .to("micrometer:timer:betsys.to.agresso.timer?action=stop")
