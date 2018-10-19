@@ -33,11 +33,11 @@ fasitResources:
   used:
   - alias: mqGateway01
     resourceType: queueManager
-  - alias: betsys-agresso-integrasjonskomponent_channel
+  - alias: betsys_channel
     propertyMap:
       name: CHANNELNAME
     resourceType: channel
-  - alias: betsys.SENDING_TIL_AGRESSO
+  - alias: betsys_SENDING_TIL_AGRESSO
     resourceType: queue
     propertyMap:
       queueName: SENDING_TIL_AGRESSO_QUEUE
