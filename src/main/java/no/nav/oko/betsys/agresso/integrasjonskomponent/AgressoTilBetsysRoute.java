@@ -65,9 +65,10 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
                 .to("micrometer:counter:agresso.to.betsys.total.counter")
                 .to("micrometer:timer:agresso.to.betsys.timer?action=start")
                 .to("validator:file:pain.001.001.03.xsd")
+                .setHeader(Exchange.FILE_NAME, header(Exchange.FILE_NAME).regexReplaceAll("(.*)\\.lis$", "$1.xml").getExpression())
                 .to(betsysSftpPath)
                 .process(exchange -> {
-                  String filename = exchange.getIn().getHeader("CamelFileNameOnly", String.class).replace(".xml", "");
+                  String filename = exchange.getIn().getHeader("CamelFileNameOnly", String.class).replace(".lis", "");
                   exchange.getOut().setBody(
                             SbdhService.opprettStringSBDH(SbdhType.PAIN001,filename,"974232952", "984851006"));
                   exchange.getOut().setHeader("CamelFileNameOnly", filename);

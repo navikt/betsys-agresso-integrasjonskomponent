@@ -102,8 +102,8 @@ public class IntegrasjonskomponentITest
 
     @After
     public void tearDown() throws IOException {
-        agressoServer.stop();
-        betsysServer.stop();
+        agressoServer.stop(true);
+        betsysServer.stop(true);
     }
 
     @Rule
@@ -111,12 +111,12 @@ public class IntegrasjonskomponentITest
 
     @Test
     public void enFilFraAgressoTilBetsys() throws Exception {
-        String filnavn = "Agresso_44.xml";
+        String filnavn = "Agresso_44.lis";
         Files.copy(Paths.get(classLoader.getResource(filstiStagingArea + filnavn).toURI()), Paths.get(mainPath,filstiTilAgressoUt + filnavn));
         receiver.getLatch().await(120, TimeUnit.SECONDS);
         assertEquals(0, receiver.getLatch().getCount());
-        await().atMost(Duration.ONE_MINUTE).until( () ->  classLoader.getResource(filstiTilBetsysUt + filnavn) != null);
-        assertNotNull(classLoader.getResource(filstiTilBetsysUt + filnavn));
+        await().atMost(Duration.ONE_MINUTE).until( () ->  classLoader.getResource(filstiTilBetsysUt + filnavn.replace(".lis", ".xml")) != null);
+        assertNotNull(classLoader.getResource(filstiTilBetsysUt +  filnavn.replace(".lis", ".xml")));
     }
 
     @Test
@@ -176,7 +176,7 @@ public class IntegrasjonskomponentITest
     @Test
     public void manglendeKontaktMedBetsysFilserverFraAgressoRoute() throws URISyntaxException, IOException {
         betsysServer.stop(true);
-        String filnavn = "Agresso_44.xml";
+        String filnavn = "Agresso_44.lis";
         Files.copy(Paths.get(classLoader.getResource(filstiStagingArea + filnavn).toURI()), Paths.get(mainPath,filstiTilAgressoUt + filnavn));
 
         await().atMost(Duration.ONE_MINUTE).until(() -> registry.find("agresso_to_betsys_exception_counter")
@@ -195,7 +195,7 @@ public class IntegrasjonskomponentITest
     @Test
     public void manglendeKontaktMedBetsysFilserverFraBetsysRoute() throws URISyntaxException, IOException {
         betsysServer.stop(true);
-        String filnavn = "Agresso_44.xml";
+        String filnavn = "Agresso_45.xml";
         Files.copy(Paths.get(classLoader.getResource(filstiStagingArea + filnavn).toURI()), Paths.get(mainPath,filstiTilBetsysInn + filnavn));
         sender.send("agresso", SbdhService.opprettStringSBDH(SbdhType.PAIN001,filnavn.replace(".xml", ""), "test","test"));
         await().atMost(Duration.ONE_MINUTE).until(() -> registry.find("betsys_to_agresso_exception_counter")
