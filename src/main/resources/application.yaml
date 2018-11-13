@@ -12,7 +12,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: "prometheus"
+        include: prometheus,healt,info
 camel:
   springboot:
     main-run-controller: true
