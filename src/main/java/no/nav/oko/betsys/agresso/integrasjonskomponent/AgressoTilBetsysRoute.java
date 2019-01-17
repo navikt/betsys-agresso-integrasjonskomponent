@@ -69,7 +69,7 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
                     registry.counter("agresso_to_betsys_exception_counter", "Exception" , exception.getClass().getSimpleName() ).increment();
                         })
         );
-        from(agressoOutbound +  "?useUserKnownHostsFile=false" )
+        from(agressoOutbound +  "&useUserKnownHostsFile=false" )
                 .routeId("KopierFilFraAgresso")
                 .log("Lest fil med navn: ${header.CamelFileNameOnly} fra Agresso")
                 .to("micrometer:counter:agresso.to.betsys.total.counter")
