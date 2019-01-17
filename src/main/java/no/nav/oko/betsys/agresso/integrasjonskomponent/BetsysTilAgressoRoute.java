@@ -49,12 +49,12 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
 
     @Override
     public void configure() {
-        final String SFTP_OPTIONS =
-                "?bridgeErrorHandler=true" +
-                        "&privateKeyFile=" + vaultPath  + "/betsysKey" +
-                        "&knownHostsFile=" +  vaultPath + "/known_hosts" +
-                        //"&useUserKnownHostsFile=false" +
-                        "&privateKeyPassphrase=betsysTest";
+        final String betsysSftpOptions =   "?throwExceptionOnConnectFailed=true" +
+                "&knownHostsFile=" + vaultPath + "/known_hosts" +
+                //"&useUserKnownHostsFile=false" +
+                "&privateKeyFile=" + vaultPath + "/betsysKey" +
+                "&privateKeyPassphrase=betsysTest";
+
         String agressoInbound = getInboundAgressoSftpPath(agressoSftpUrl, agressoSftpUsername, agressoSftpPassword);
         String betsysSftpPath = getBetsysSftpPath(betsysSftpUrl, betsysSftpUsername, betsysSftpPassword);
 
@@ -74,7 +74,7 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
                 .split(xpath("//n:DocumentIdentification/n:InstanceIdentifier/text()")
                         .namespace("n", "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader"))
                 .log("Forsøker å lese fil med navn: ${body} fra Betsys til Agresso")
-                .pollEnrich().simple(betsysSftpPath + SFTP_OPTIONS + "&fileName=${body}" + XML_SUFFIX).timeout(POLL_TIMEOUT)
+                .pollEnrich().simple(betsysSftpPath + betsysSftpOptions + "&fileName=${body}" + XML_SUFFIX).timeout(POLL_TIMEOUT)
                 .to(agressoInbound + "&useUserKnownHostsFile=false")
                 .log("Fil med navn:  ${header.CamelFileNameOnly} ferdig kopiert fra Betsys til Agresso")
                 .to("micrometer:timer:betsys.to.agresso.timer?action=stop")

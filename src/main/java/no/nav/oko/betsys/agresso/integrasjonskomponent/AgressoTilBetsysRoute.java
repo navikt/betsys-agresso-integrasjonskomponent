@@ -46,13 +46,16 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
 
     @Override
     public void configure() {
-        final String SFTP_OPTIONS =
-                "?initialDelay=15000" +
+        final String agressoSftpOptions =
+                "initialDelay=15000" +
                 "&maxMessagesPerPoll=1&delay=15000" +
                 "&move=Arkiv" +
                 "&readLock=changed" +
                 "&bridgeErrorHandler=true" +
-                "&throwExceptionOnConnectFailed=true" +
+                "&useUserKnownHostsFile=false";
+
+
+        final String betsysSftpOptions =   "?throwExceptionOnConnectFailed=true" +
                 "&knownHostsFile=" + vaultPath + "/known_hosts" +
                 //"&useUserKnownHostsFile=false" +
                 "&privateKeyFile=" + vaultPath + "/betsysKey" +
@@ -69,14 +72,14 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
                     registry.counter("agresso_to_betsys_exception_counter", "Exception" , exception.getClass().getSimpleName() ).increment();
                         })
         );
-        from(agressoOutbound +  "&useUserKnownHostsFile=false" )
+        from(agressoOutbound +  agressoSftpOptions )
                 .routeId("KopierFilFraAgresso")
                 .log("Lest fil med navn: ${header.CamelFileNameOnly} fra Agresso")
                 .to("micrometer:counter:agresso.to.betsys.total.counter")
                 .to("micrometer:timer:agresso.to.betsys.timer?action=start")
                 .to("validator:file:pain.001.001.03.xsd")
                 .setHeader(Exchange.FILE_NAME, header(Exchange.FILE_NAME).regexReplaceAll("(.*)\\.lis$", "$1.xml").getExpression())
-                .to(betsysSftpPath + SFTP_OPTIONS)
+                .to(betsysSftpPath + betsysSftpOptions)
                 .process(exchange -> {
                   String filename = exchange.getIn().getHeader("CamelFileNameOnly", String.class).replace(".lis", "");
                   exchange.getOut().setBody(
