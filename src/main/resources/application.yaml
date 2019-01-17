@@ -19,4 +19,4 @@ camel:
 
 optConfig: production
 PORT: 22
-vaultPath: /
+vaultPath: /var/run/secrets/nais.io/vault
