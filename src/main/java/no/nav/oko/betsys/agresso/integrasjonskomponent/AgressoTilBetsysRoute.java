@@ -80,7 +80,7 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
                 .process(exchange -> {
                   String filename = exchange.getIn().getHeader("CamelFileNameOnly", String.class).replace(".lis", "");
                   exchange.getOut().setBody(
-                            SbdhService.opprettStringSBDH(SbdhType.PAIN001,filename,"974232952", "984851006"));
+                            SbdhService.opprettStringSBDH(SbdhType.PAIN001,filename,"10263448004", "920058817"));
                   exchange.getOut().setHeader("CamelFileNameOnly", filename);
                     }
                 )
@@ -103,7 +103,7 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
 
     private String getBetsysSftpPath(String url, String username) {
         return "sftp://" +
-                username +
+                "betsys" +
                 "@" +
                 url +
                 ":" + port + "/outbound";
