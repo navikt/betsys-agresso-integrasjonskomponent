@@ -47,7 +47,7 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
     @Override
     public void configure() {
         final String agressoSftpOptions =
-                "initialDelay=15000" +
+                "&initialDelay=15000" +
                 "&maxMessagesPerPoll=1&delay=15000" +
                 "&move=Arkiv" +
                 "&readLock=changed" +
