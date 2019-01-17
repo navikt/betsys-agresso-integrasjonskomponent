@@ -58,6 +58,8 @@ fasitResources:
       password: SFTPPASSWORD
   - alias: Betsys_sftp_server
     resourceType: baseUrl
+    propertyMap:
+      url: BETSYSSERVERURL
   - alias: Betsys_sftp_user
     resourceType: credential
     propertyMap:

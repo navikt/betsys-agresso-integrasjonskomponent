@@ -25,7 +25,7 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
     @Value("${SFTPSERVERURL}")
     private String agressoSftpUrl;
 
-    @Value("${BETSYS_SFTP_SERVER_URL}")
+    @Value("${BETSYSSERVERURL}")
     private String betsysSftpUrl;
 
     @Value("${BETSYSUSERNAME}")
