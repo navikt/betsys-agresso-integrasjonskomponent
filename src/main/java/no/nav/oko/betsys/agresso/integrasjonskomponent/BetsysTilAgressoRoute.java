@@ -50,7 +50,7 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
     @Override
     public void configure() {
         final String SFTP_OPTIONS =
-                "&bridgeErrorHandler=true" +
+                "?bridgeErrorHandler=true" +
                         "&knownHostsFile=" +  vaultPath + "/known_hosts" +
                         //"&privateKeyFile=" + vaultPath  + "/betsysKey" +
                         "&useUserKnownHostsFile=false" +
