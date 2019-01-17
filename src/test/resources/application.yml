@@ -28,9 +28,10 @@ SENDING_TIL_BANK_QUEUE: betsys
 SENDING_TIL_AGRESSO_QUEUE: agresso
 
 PORT: 4696
+vaultPath: C:\Users\E151887\IdeaProjects\betsysagressointegrasjonskomponent\
 
-activemq:
-  broker-url: vm://embedded-broker?create=false
+#activemq:
+#  broker-url: vm://embedded-broker?create=false
 
 queue:
   helloworld: helloworld.q

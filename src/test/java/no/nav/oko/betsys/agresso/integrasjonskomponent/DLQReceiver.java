@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CountDownLatch;
 
-@Component
+//@Component
 public class DLQReceiver {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DLQReceiver.class);

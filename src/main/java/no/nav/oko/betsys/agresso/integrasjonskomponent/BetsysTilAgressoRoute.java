@@ -13,8 +13,6 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BetsysTilAgressoRoute.class);
 
-    private static final String SFTP_OPTIONS = "&bridgeErrorHandler=true";
-
     private static final String XML_SUFFIX = ".xml";
     private static final long POLL_TIMEOUT = 10000;
 
@@ -39,6 +37,9 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
     @Value("${PORT}")
     private String port;
 
+    @Value("${vaultPath}")
+    private String vaultPath;
+
     private MeterRegistry registry;
 
     public  BetsysTilAgressoRoute(MeterRegistry registry){
@@ -48,6 +49,11 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
 
     @Override
     public void configure() {
+        final String SFTP_OPTIONS =
+                "&bridgeErrorHandler=true" +
+                        "&knownHostsFile=" +  vaultPath + "/known_hosts" +
+                        "&privateKeyFile=" + vaultPath  + "/betsysKey" +
+                        "&privateKeyPassphrase=betsysTest";
         String agressoInbound = getInboundAgressoSftpPath(agressoSftpUrl, agressoSftpUsername, agressoSftpPassword);
         String betsysSftpPath = getBetsysSftpPath(betsysSftpUrl, betsysSftpUsername, betsysSftpPassword);
 
@@ -68,7 +74,7 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
                         .namespace("n", "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader"))
                 .log("Forsøker å lese fil med navn: ${body} fra Betsys til Agresso")
                 .pollEnrich().simple(betsysSftpPath + SFTP_OPTIONS + "&fileName=${body}" + XML_SUFFIX).timeout(POLL_TIMEOUT)
-                .to(agressoInbound)
+                .to(agressoInbound + "&useUserKnownHostsFile=false")
                 .log("Fil med navn:  ${header.CamelFileNameOnly} ferdig kopiert fra Betsys til Agresso")
                 .to("micrometer:timer:betsys.to.agresso.timer?action=stop")
                 .end();
@@ -79,10 +85,7 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
                 username +
                 "@" +
                 url +
-                ":" + port + "/inbound" +
-                "?password=" +
-                password +
-                "&useUserKnownHostsFile=false";
+                ":" + port + "/inbound";
     }
 
     private String getInboundAgressoSftpPath(String url, String username, String password) {
@@ -92,8 +95,7 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
                 url +
                 ":" + port + "/inbound" +
                 "?password=" +
-                password +
-                "&useUserKnownHostsFile=false";
+                password;
     }
 
 }

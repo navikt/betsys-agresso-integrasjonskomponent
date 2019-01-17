@@ -17,8 +17,6 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AgressoTilBetsysRoute.class);
 
-    private static final String SFTP_OPTIONS = "&useUserKnownHostsFile=false&initialDelay=15000&maxMessagesPerPoll=1&delay=15000&move=Arkiv&readLock=changed&bridgeErrorHandler=true&throwExceptionOnConnectFailed=true";
-
     @Value("${SFTPUSERNAME}")
     private String agressoSftpUsername;
 
@@ -34,11 +32,11 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
     @Value("${BETSYSUSERNAME}")
     private String betsysSftpUsername;
 
-    @Value("${BETSYSPASSWORD}")
-    private String betsysSftpPassword;
-
     @Value("${PORT}")
     private String port;
+
+    @Value("${vaultPath}")
+    private String vaultPath;
 
     private MeterRegistry registry;
 
@@ -48,8 +46,20 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
 
     @Override
     public void configure() {
+        final String SFTP_OPTIONS =
+                "&initialDelay=15000" +
+                "&maxMessagesPerPoll=1&delay=15000" +
+                "&move=Arkiv" +
+                "&readLock=changed" +
+                "&bridgeErrorHandler=true" +
+                "&throwExceptionOnConnectFailed=true" +
+                "&knownHostsFile=" + vaultPath + "/known_hosts" +
+                //"&useUserKnownHostsFile=false" +
+                "&privateKeyFile=" + vaultPath + "/betsysKey" +
+                "&privateKeyPassphrase=betsysTest";
+
         String agressoOutbound = getOutboundAgressoSftpPath(agressoSftpUrl, agressoSftpUsername, agressoSftpPassword);
-        String betsysSftpPath = getBetsysSftpPath(betsysSftpUrl, betsysSftpUsername, betsysSftpPassword);
+        String betsysSftpPath = getBetsysSftpPath(betsysSftpUrl, betsysSftpUsername);
 
         LOGGER.info("Setter opp AgressoTilBetys Camel-route");
 
@@ -66,7 +76,7 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
                 .to("micrometer:timer:agresso.to.betsys.timer?action=start")
                 .to("validator:file:pain.001.001.03.xsd")
                 .setHeader(Exchange.FILE_NAME, header(Exchange.FILE_NAME).regexReplaceAll("(.*)\\.lis$", "$1.xml").getExpression())
-                .to(betsysSftpPath)
+                .to(betsysSftpPath + "&useUserKnownHostsFile=false")
                 .process(exchange -> {
                   String filename = exchange.getIn().getHeader("CamelFileNameOnly", String.class).replace(".lis", "");
                   exchange.getOut().setBody(
@@ -74,7 +84,7 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
                   exchange.getOut().setHeader("CamelFileNameOnly", filename);
                     }
                 )
-                .to("ref:betsysUt")
+                .to("ref:betsysUt").id("betsysJMS")
                 .log("Fil med navn: ${header.CamelFileNameOnly} ferdig kopiert fra Agresso til Betsys")
                 .to("micrometer:timer:agresso.to.betsys.timer?action=stop")
                 .end();
@@ -91,14 +101,11 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
                 password;
     }
 
-    private String getBetsysSftpPath(String url, String username, String password) {
+    private String getBetsysSftpPath(String url, String username) {
         return "sftp://" +
                 username +
                 "@" +
                 url +
-                ":" + port + "/outbound" +
-                "?password=" +
-                password +
-                "&useUserKnownHostsFile=false";
+                ":" + port + "/outbound";
     }
 }
