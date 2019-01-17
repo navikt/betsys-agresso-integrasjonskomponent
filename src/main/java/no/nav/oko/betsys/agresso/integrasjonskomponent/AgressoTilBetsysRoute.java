@@ -53,8 +53,8 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
                 "&readLock=changed" +
                 "&bridgeErrorHandler=true" +
                 "&throwExceptionOnConnectFailed=true" +
-                //"&knownHostsFile=" + vaultPath + "/known_hosts" +
-                "&useUserKnownHostsFile=false" +
+                "&knownHostsFile=" + vaultPath + "/known_hosts" +
+                //"&useUserKnownHostsFile=false" +
                 "&privateKeyFile=" + vaultPath + "/betsysKey" +
                 "&privateKeyPassphrase=betsysTest";
 

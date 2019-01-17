@@ -52,8 +52,8 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
         final String SFTP_OPTIONS =
                 "?bridgeErrorHandler=true" +
                         "&privateKeyFile=" + vaultPath  + "/betsysKey" +
-                        //"&knownHostsFile=" +  vaultPath + "/known_hosts" +
-                        "&useUserKnownHostsFile=false" +
+                        "&knownHostsFile=" +  vaultPath + "/known_hosts" +
+                        //"&useUserKnownHostsFile=false" +
                         "&privateKeyPassphrase=betsysTest";
         String agressoInbound = getInboundAgressoSftpPath(agressoSftpUrl, agressoSftpUsername, agressoSftpPassword);
         String betsysSftpPath = getBetsysSftpPath(betsysSftpUrl, betsysSftpUsername, betsysSftpPassword);
