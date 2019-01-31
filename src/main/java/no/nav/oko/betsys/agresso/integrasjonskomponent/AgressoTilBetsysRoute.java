@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 
 @Service
 public class AgressoTilBetsysRoute extends RouteBuilder {
@@ -55,7 +57,8 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
                 "&useUserKnownHostsFile=false";
 
 
-        final String betsysSftpOptions =   "?throwExceptionOnConnectFailed=true" +
+        final String betsysSftpOptions =
+                "?throwExceptionOnConnectFailed=true" +
                 "&knownHostsFile=" + vaultPath + "/known_hosts" +
                 //"&useUserKnownHostsFile=false" +
                 "&privateKeyFile=" + vaultPath + "/betsysKey" +
@@ -90,6 +93,7 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
                 .to("ref:betsysUt").id("betsysJMS")
                 .log("Fil med navn: ${header.CamelFileNameOnly} ferdig kopiert fra Agresso til Betsys")
                 .to("micrometer:timer:agresso.to.betsys.timer?action=stop")
+                .process(exchange ->  registry.gauge("agresso_to_betsys_last_file_transfer", new AtomicLong()).set(System.currentTimeMillis()))
                 .end();
     }
 
@@ -99,7 +103,7 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
                 username +
                 "@" +
                 url +
-                ":" + port + "/outbound" +
+                "/outbound" +
                 "?password=" +
                 password;
     }
@@ -109,6 +113,6 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
                 "betsys" +
                 "@" +
                 url +
-                ":" + port + "/outbound";
+                "/outbound";
     }
 }
