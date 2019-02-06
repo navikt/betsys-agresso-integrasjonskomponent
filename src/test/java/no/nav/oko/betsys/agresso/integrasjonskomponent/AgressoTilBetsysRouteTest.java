@@ -26,7 +26,7 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER
 
 @RunWith(CamelSpringBootRunner.class)
 @SpringBootTest(classes = {Integrasjonskomponent.class},
-        properties = { "camel.springboot.java-routes-include-pattern=**/AgressoTilBetsysRoute*", "spring.exclude=no.nav.oko.betsys.agresso.integrasjonskomponent.config.JmsConfig"})
+        properties = { "camel.springboot.java-routes-include-pattern=**/AgressoTilBetsysRoute*"})
 @UseAdviceWith
 @DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
 @DisableJmx
@@ -59,7 +59,7 @@ public class AgressoTilBetsysRouteTest {
             public void configure() throws Exception {
                 replaceFromWith("file://target/inbound");
                 mockEndpoints();
-                weaveById("betsysServer").replace().to("file://target/outbound");
+                weaveById("toBetsysServer").replace().to("file://target/outbound");
                 weaveById("betsysJMS").replace().to(mockJmsBetsys);
             }
         });

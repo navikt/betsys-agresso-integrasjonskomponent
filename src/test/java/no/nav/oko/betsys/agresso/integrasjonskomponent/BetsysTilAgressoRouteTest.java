@@ -61,8 +61,8 @@ public class BetsysTilAgressoRouteTest {
         context.getRouteDefinition("KopierFilFraBetsys").adviceWith(context, new AdviceWithRouteBuilder() {
             public void configure() throws Exception {
                 replaceFromWith(stubJmsBetsysInn);
-                weaveById("betsysServer").replace().pollEnrich("file://target/inbound?fileName=${body}");
-                weaveById("agressoServer").replace().to("file://target/outbound");
+                weaveById("fromBetsysServer").replace().pollEnrich("file://target/inbound?fileName=${body}");
+                weaveById("toAgressoServer").replace().to("file://target/outbound");
                 mockEndpoints();
             }
         });
