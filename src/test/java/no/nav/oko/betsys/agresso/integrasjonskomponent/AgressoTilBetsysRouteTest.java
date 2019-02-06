@@ -1,15 +1,16 @@
 package no.nav.oko.betsys.agresso.integrasjonskomponent;
 
-import io.micrometer.core.instrument.MeterRegistry;
 import org.apache.camel.CamelContext;
+import org.apache.camel.EndpointInject;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.AdviceWithRouteBuilder;
 import org.apache.camel.builder.NotifyBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
-import org.apache.camel.model.RouteDefinition;
 import org.apache.camel.test.spring.CamelSpringBootRunner;
+import org.apache.camel.test.spring.DisableJmx;
 import org.apache.camel.test.spring.UseAdviceWith;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,9 +26,10 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER
 
 @RunWith(CamelSpringBootRunner.class)
 @SpringBootTest(classes = {Integrasjonskomponent.class},
-        properties = { "camel.springboot.java-routes-include-pattern=**/AgressoTilBetsysRoute*"})
+        properties = { "camel.springboot.java-routes-include-pattern=**/AgressoTilBetsysRoute*", "spring.exclude=no.nav.oko.betsys.agresso.integrasjonskomponent.config.JmsConfig"})
 @UseAdviceWith
 @DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
+@DisableJmx
 public class AgressoTilBetsysRouteTest {
 
     @Autowired
@@ -36,54 +38,125 @@ public class AgressoTilBetsysRouteTest {
     @Autowired
     private ProducerTemplate template;
 
-    @Autowired
-    private MeterRegistry registry;
+    @EndpointInject(uri = "mock:jms:betsys")
+    private MockEndpoint mockJmsBetsys;
 
-    @Before
-    public void cleanDir() throws Exception {
+    private NotifyBuilder notify;
+
+    private MockEndpoint mockValidator;
+
+    @AfterClass
+    public static void clenup(){
         deleteDirectory("target/inbound");
+        deleteDirectory("target/outbound");
     }
 
-    @Test
-    public void testReplaceFromWithEndpoints() throws Exception {
-        RouteDefinition route = context.getRouteDefinition("KopierFilFraAgresso");
-        route.adviceWith(context, new AdviceWithRouteBuilder() {
+    @Before
+    public void setUp() throws Exception {
+        deleteDirectory("target/inbound");
+        deleteDirectory("target/outbound");
+        context.getRouteDefinition("KopierFilFraAgresso").adviceWith(context, new AdviceWithRouteBuilder() {
             public void configure() throws Exception {
                 replaceFromWith("file://target/inbound");
-                mockEndpoints("validator:*");
-               // weaveById("sftp://admin@127.0.0.44:4696/outbound").replace().to("file://target/outbound");
-                mockEndpointsAndSkip("sftp*");
-               // mockEndpointsAndSkip("validator*");
-                //mockEndpointsAndSkip("betsysJMS");
-                weaveById("betsysJMS").remove();
-                //  interceptSendToEndpoint("betsysJMS").to("mock:ref:betsysUt");
+                mockEndpoints();
+                weaveById("betsysServer").replace().to("file://target/outbound");
+                weaveById("betsysJMS").replace().to(mockJmsBetsys);
             }
         });
-        MockEndpoint mockvalidator = context.getEndpoint("mock:validator:file:pain.001.001.03.xsd", MockEndpoint.class);
-        mockvalidator.expectedMessageCount(1);
-        MockEndpoint outboundMock = context.getEndpoint("mock:sftp:admin@127.0.0.44:4696/outbound", MockEndpoint.class);
-        outboundMock.expectedHeaderReceived(Exchange.FILE_NAME, "Agresso_44.xml");
-
-        NotifyBuilder notify = new NotifyBuilder(context).whenCompleted(1).create();
+        notify = new NotifyBuilder(context).whenCompleted(1).create();
+        mockValidator = context.getEndpoint("mock:validator:file:pain.001.001.03.xsd", MockEndpoint.class);
 
         context.start();
 
-//        MockEndpoint mockOut = context.getEndpoint("mock:betsysSftp", MockEndpoint.class);
-//        mockOut.expectedMessageCount(1);
-//        mockOut.expectedBodiesReceived("Camel rocks");
+    }
 
-        //       template.sendBodyAndHeader("direct:hitme",
-        //               "Hello World", Exchange.FILE_NAME, "hello.lis");
+    //    @Test
+//    public void enFilFraAgressoTilBetsys() throws Exception {
+//        String filnavn = "Agresso_44.lis";
+//        Files.copy(Paths.get(classLoader.getResource(filstiStagingArea + filnavn).toURI()), Paths.get(mainPath,filstiTilAgressoUt + filnavn));
+//        receiver.getLatch().await(120, TimeUnit.SECONDS);
+//        assertEquals(0, receiver.getLatch().getCount());
+//        await().atMost(Duration.ONE_MINUTE).until( () ->  classLoader.getResource(filstiTilBetsysUt + filnavn.replace(".lis", ".xml")) != null);
+//        assertNotNull(classLoader.getResource(filstiTilBetsysUt +  filnavn.replace(".lis", ".xml")));
+//    }
+
+    @Test
+    public void sendOneFileFromAgressoToBetsys() throws Exception {
+        mockValidator.expectedMessageCount(1);
+        mockJmsBetsys.expectedMessageCount(1);
+        //mockJmsBetsys.expectedBodiesReceived(SbdhService.opprettStringSBDH(SbdhType.PAIN001,"Agresso_44.xml","10263448004", "920058817"));
+
         template.sendBodyAndHeader("file://target/inbound",
                 new File("target/test-classes/input/Agresso_44.lis"), Exchange.FILE_NAME, "Agresso_44.lis");
-        //template.sendBodyAndHeaders("direct:hitme",);
-        // template.sendBody("direct:hitme", "Camel rocks");
-        // template.sendBody("direct:hitme", "Bad donkey");
-        assertTrue(notify.matchesMockWaitTime());
-        mockvalidator.assertIsSatisfied();
-        outboundMock.assertIsSatisfied();
-//        mockOut.assertIsSatisfied();
+
+        assertTrue("Route does not take more than 10 seconds", notify.matchesMockWaitTime());
+        mockValidator.assertIsSatisfied();
+        mockJmsBetsys.assertIsSatisfied();
+
+        File target = new File("target/outbound/Agresso_44.xml");
+        assertTrue("File is transferred ", target.exists());
     }
+//
+//    @Test
+//    public void sendWrongFileFromAgressoToBetsys() throws Exception {
+//        mockValidator.expectedMessageCount(1);
+//        mockJmsBetsys.expectedMessageCount(1);
+//        //mockJmsBetsys.expectedBodiesReceived(SbdhService.opprettStringSBDH(SbdhType.PAIN001,"Agresso_44.xml","10263448004", "920058817"));
+//
+//        template.sendBodyAndHeader("file://target/inbound",
+//                new File("target/test-classes/input/feilFil.xml"), Exchange.FILE_NAME, "failFil.xml");
+//
+//        assertTrue("Route does not take more than 10 seconds", notify.matchesMockWaitTime());
+//        mockValidator.assertIsSatisfied();
+//        mockJmsBetsys.assertIsSatisfied();
+//
+//        File target = new File("target/outbound/Agresso_44.xml");
+//        assertTrue("File is transferred ", target.exists());
+//
+//        // outboundMock.assertIsSatisfied();
+//////        //todo sende Alarm ved slik feil
+//////        String filnavn = "feilFil.xml";
+//////        String errorMappe= "/Error/";
+//////        Files.copy(Paths.get(classLoader.getResource(filstiStagingArea + filnavn).toURI()), Paths.get(mainPath,filstiTilAgressoUt + filnavn));
+//////        await().atMost(Duration.ONE_MINUTE).until( () ->  classLoader.getResource(filstiTilAgressoUt + errorMappe + filnavn) != null);
+//////        assertNotNull(classLoader.getResource(filstiTilAgressoUt + errorMappe + filnavn));
+//    }
+
+////    @Test
+////    public void manglendeKontaktMedBetsysKo(){
+////        //TODO implement test
+////    }
+
+//    @Test
+//    public void manglendeKontaktMedAgressoFilserverFraAgressoRoute() throws IOException {
+//            agressoServer.stop(true);
+//        await().atMost(Duration.ONE_MINUTE).until(() -> registry.find("agresso_to_betsys_exception_counter")
+//                                                                .tag("Exception", "GenericFileOperationFailedException")
+//                                                                .counter() != null);
+//
+//        assertTrue(registry.get("agresso_to_betsys_exception_counter")
+//                                     .tag("Exception","GenericFileOperationFailedException")
+//                                     .counter().count() > 0);
+//    }
+
+//    @Test
+//    public void manglendeKontaktMedBetsysFilserverFraAgressoRoute() throws URISyntaxException, IOException {
+//        betsysServer.stop(true);
+//        String filnavn = "Agresso_44.lis";
+//        Files.copy(Paths.get(classLoader.getResource(filstiStagingArea + filnavn).toURI()), Paths.get(mainPath,filstiTilAgressoUt + filnavn));
+//
+//        await().atMost(Duration.ONE_MINUTE).until(() -> registry.find("agresso_to_betsys_exception_counter")
+//                .tag("Exception", "GenericFileOperationFailedException")
+//                .counter() != null);
+//
+//        assertTrue(registry.get("agresso_to_betsys_exception_counter")
+//                .tag("Exception","GenericFileOperationFailedException")
+//                .counter().count() > 0);
+//
+//        assertEquals(1, receiver.getLatch().getCount());
+//
+//        assertNotNull(classLoader.getResource(filstiTilAgressoUt + filnavn));
+//    }
 
 
 }

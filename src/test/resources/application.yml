@@ -8,10 +8,6 @@ info:
     description: '@project.description@'
     version: '@project.version@'
 
-management:
-  security:
-    enabled: false
-
 camel:
   springboot:
     main-run-controller: true
@@ -24,14 +20,5 @@ SFTPSERVERURL: 127.0.0.33
 BETSYSSERVERURL: 127.0.0.44
 BETSYSUSERNAME: admin
 BETSYSPASSWORD: admin
-SENDING_TIL_BANK_QUEUE: betsys
-SENDING_TIL_AGRESSO_QUEUE: agresso
 
-PORT: 4696
-vaultPath: C:\Users\E151887\IdeaProjects\betsysagressointegrasjonskomponent\
-
-#activemq:
-#  broker-url: vm://embedded-broker?create=false
-
-queue:
-  helloworld: helloworld.q
+vaultPath: \
