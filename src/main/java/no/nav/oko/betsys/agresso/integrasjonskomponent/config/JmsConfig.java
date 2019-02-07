@@ -23,6 +23,12 @@ public class JmsConfig {
     @Value("${CHANNELNAME}")
     private String channelName;
 
+    @Value("${mqUser}")
+    private String mqUser;
+
+    @Value("${mqPassword}")
+    private String mqPassword;
+
     @Bean
     public Queue betsysInnQueue(@Value("${SENDING_TIL_AGRESSO_QUEUE}") String betsysInnQueue) throws JMSException {
         return new MQQueue(betsysInnQueue);
@@ -74,8 +80,8 @@ public class JmsConfig {
 
         UserCredentialsConnectionFactoryAdapter adapter = new UserCredentialsConnectionFactoryAdapter();
         adapter.setTargetConnectionFactory(connectionFactory);
-        adapter.setUsername("srvappserver");
-        adapter.setPassword("");
+        adapter.setUsername(mqUser);
+        adapter.setPassword(mqPassword);
 
         return adapter;
     }

@@ -15,23 +15,23 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
     private static final String XML_SUFFIX = ".xml";
     private static final long POLL_TIMEOUT = 10000;
 
-    @Value("${SFTPUSERNAME}")
-    private String agressoSftpUsername;
+    @Value("${agressoSftpUser}")
+    private String agressoSftpUser;
 
-    @Value("${SFTPPASSWORD}")
-    private String agressoSftpPassword;
+    @Value("${agressoKeyPassphrase}")
+    private String agressoKeyPassphrase;
 
-    @Value("${SFTPSERVERURL}")
-    private String agressoSftpUrl;
+    @Value("${agressoSftpPath}")
+    private String agressoSftpPath;
 
-    @Value("${BETSYSSERVERURL}")
-    private String betsysSftpUrl;
+    @Value("${betsysSftpPath}")
+    private String betsysSftpPath;
 
-    @Value("${BETSYSUSERNAME}")
-    private String betsysSftpUsername;
+    @Value("${betsysSftpUser}")
+    private String betsysSftpUser;
 
-    @Value("${BETSYSPASSWORD}")
-    private String betsysSftpPassword;
+    @Value("${betsysKeyPassphrase}")
+    private String betsysKeyPassphrase;
 
     @Value("${vaultPath}")
     private String vaultPath;
@@ -46,15 +46,15 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
                 "?throwExceptionOnConnectFailed=true" +
                 "&knownHostsFile=" + vaultPath + "/known_hosts" +
                 "&privateKeyFile=" + vaultPath + "/betsysKey" +
-                "&privateKeyPassphrase=betsysTest";
+                "&privateKeyPassphrase=" + betsysKeyPassphrase;
 
         final String agressoSftpOptions =
                 "?knownHostsFile=" + vaultPath + "/known_hosts" +
                 "&privateKeyFile=" + vaultPath + "/betsysKey" +
-                "&privateKeyPassphrase=betsysTest";
+                "&privateKeyPassphrase=" + agressoKeyPassphrase;
 
-        String agressoInbound = getInboundAgressoSftpPath(agressoSftpUrl, agressoSftpUsername, agressoSftpPassword);
-        String betsysSftpPath = getBetsysSftpPath(betsysSftpUrl, betsysSftpUsername, betsysSftpPassword);
+        String betsysInbound = getBetsysSftpPath(betsysSftpPath, betsysSftpUser);
+        String agressoInbound = getAgressoSftpPath(agressoSftpPath, agressoSftpUser);
 
         LOGGER.info("Setter opp BetsysTilAgresso Camel-route");
 
@@ -64,7 +64,7 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
                 .split(xpath("//n:DocumentIdentification/n:InstanceIdentifier/text()")
                         .namespace("n", "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader"))
                 .log("Forsøker å lese fil med navn: ${body} fra Betsys til Agresso")
-                .pollEnrich().simple(betsysSftpPath + betsysSftpOptions + "&fileName=${body}" + XML_SUFFIX).timeout(POLL_TIMEOUT).id("fromBetsysServer")
+                .pollEnrich().simple(betsysInbound + betsysSftpOptions + "&fileName=${body}" + XML_SUFFIX).timeout(POLL_TIMEOUT).id("fromBetsysServer")
                 .to(agressoInbound + agressoSftpOptions).id("toAgressoServer")
                 .log("Fil med navn:  ${header.CamelFileNameOnly} ferdig kopiert fra Betsys til Agresso")
                 .to("micrometer:timer:betsys.to.agresso.timer?action=stop")
@@ -72,7 +72,7 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
                 .end();
     }
 
-    private String getBetsysSftpPath(String url, String username, String password) {
+    private String getBetsysSftpPath(String url, String username) {
         return "sftp://" +
                 username +
                 "@" +
@@ -80,7 +80,7 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
                 "/inbound";
     }
 
-    private String getInboundAgressoSftpPath(String url, String username, String password) {
+    private String getAgressoSftpPath(String url, String username) {
         return "sftp://" +
                 username +
                 "@" +
