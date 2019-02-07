@@ -41,9 +41,6 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
     @Value("${bankReceiver}")
     private String receiver;
 
-    public AgressoTilBetsysRoute(){
-    }
-
     @Override
     public void configure() {
         final String agressoSftpOptions =
@@ -63,8 +60,8 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
                 "&privateKeyFile=" + vaultPath + "/betsysKey" +
                 "&privateKeyPassphrase=" + agressoKeyPassphrase;
 
-        String agressoOutbound = getAgressoSftpPath(agressoSftpPath, agressoSftpUser);
-        String betsysOutbound = getBetsysSftpPath(betsysSftpPath, betsysSftpUser);
+        final String agressoOutbound = "sftp://" + agressoSftpUser + "@" + agressoSftpPath + "/outbound";
+        final String betsysOutbound = "sftp://" + betsysSftpUser + "@" + betsysSftpPath + "/outbound";
 
         LOGGER.info("Setter opp AgressoTilBetys Camel-route");
 
@@ -89,20 +86,4 @@ public class AgressoTilBetsysRoute extends RouteBuilder {
                 .end();
     }
 
-
-    private String getAgressoSftpPath(String url, String username) {
-        return "sftp://" +
-                username +
-                "@" +
-                url +
-                "/outbound";
-    }
-
-    private String getBetsysSftpPath(String url, String username) {
-        return "sftp://" +
-                username +
-                "@" +
-                url +
-                "/outbound";
-    }
 }

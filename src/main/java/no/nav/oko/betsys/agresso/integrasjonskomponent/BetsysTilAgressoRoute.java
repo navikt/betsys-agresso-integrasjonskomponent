@@ -12,9 +12,6 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BetsysTilAgressoRoute.class);
 
-    private static final String XML_SUFFIX = ".xml";
-    private static final long POLL_TIMEOUT = 10000;
-
     @Value("${agressoSftpUser}")
     private String agressoSftpUser;
 
@@ -36,10 +33,6 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
     @Value("${vaultPath}")
     private String vaultPath;
 
-    public  BetsysTilAgressoRoute(){
-    }
-
-
     @Override
     public void configure() {
         final String betsysSftpOptions =
@@ -53,8 +46,8 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
                 "&privateKeyFile=" + vaultPath + "/betsysKey" +
                 "&privateKeyPassphrase=" + agressoKeyPassphrase;
 
-        String betsysInbound = getBetsysSftpPath(betsysSftpPath, betsysSftpUser);
-        String agressoInbound = getAgressoSftpPath(agressoSftpPath, agressoSftpUser);
+        final String betsysInbound = "sftp://" + betsysSftpUser + "@" + betsysSftpPath + "/inbound";
+        final String agressoInbound ="sftp://" + agressoSftpUser + "@" + agressoSftpPath + "/inbound";
 
         LOGGER.info("Setter opp BetsysTilAgresso Camel-route");
 
@@ -64,28 +57,12 @@ public class BetsysTilAgressoRoute extends RouteBuilder {
                 .split(xpath("//n:DocumentIdentification/n:InstanceIdentifier/text()")
                         .namespace("n", "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader"))
                 .log("Forsøker å lese fil med navn: ${body} fra Betsys til Agresso")
-                .pollEnrich().simple(betsysInbound + betsysSftpOptions + "&fileName=${body}" + XML_SUFFIX).timeout(POLL_TIMEOUT).id("fromBetsysServer")
+                .pollEnrich().simple(betsysInbound + betsysSftpOptions + "&fileName=${body}" + ".xml").timeout(10000).id("fromBetsysServer")
                 .to(agressoInbound + agressoSftpOptions).id("toAgressoServer")
                 .log("Fil med navn:  ${header.CamelFileNameOnly} ferdig kopiert fra Betsys til Agresso")
                 .to("micrometer:timer:betsys.to.agresso.timer?action=stop")
                 .to("micrometer:counter:betsys.to.agresso.total.counter")
                 .end();
-    }
-
-    private String getBetsysSftpPath(String url, String username) {
-        return "sftp://" +
-                username +
-                "@" +
-                url +
-                "/inbound";
-    }
-
-    private String getAgressoSftpPath(String url, String username) {
-        return "sftp://" +
-                username +
-                "@" +
-                url +
-                "/inbound";
     }
 
 }
