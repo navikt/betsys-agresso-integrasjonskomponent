@@ -26,7 +26,7 @@ public class JmsConfig {
     @Value("${mqUser}")
     private String mqUser;
 
-    @Value("${mqPassword}")
+    @Value("${mqPassword:}")
     private String mqPassword;
 
     @Bean
