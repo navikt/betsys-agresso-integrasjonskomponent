@@ -53,8 +53,6 @@ public class SftpHealthCheckRoute extends RouteBuilder {
         final String agressoSftpOptions =
                 "?maxMessagesPerPoll=1" +
                         "&throwExceptionOnConnectFailed=true" +
-                        "&initialDelay=15000" +
-                        "&delay=15000" +
                         "&delete=true" +
                         "&knownHostsFile=" + vaultPath + "/known_hosts" +
                         "&privateKeyFile=" + vaultPath + "/betsysKey" +
@@ -63,8 +61,7 @@ public class SftpHealthCheckRoute extends RouteBuilder {
         final String betsysSftpOptions =
                 "?throwExceptionOnConnectFailed=true" +
                         "&maxMessagesPerPoll=1" +
-                        "&initialDelay=15000" +
-                        "&delay=15000" +
+                        "&useFixedDelay=15000" +
                         "&delete=true" +
                         "&knownHostsFile=" + vaultPath + "/known_hosts" +
                         "&privateKeyFile=" + vaultPath + "/betsysKey" +
