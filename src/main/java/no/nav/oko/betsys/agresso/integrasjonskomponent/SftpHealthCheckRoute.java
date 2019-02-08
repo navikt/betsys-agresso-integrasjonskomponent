@@ -44,8 +44,11 @@ public class SftpHealthCheckRoute extends RouteBuilder {
 
     private MeterRegistry registry;
 
+    private AtomicLong atomicLong;
+
     public SftpHealthCheckRoute(MeterRegistry registry){
         this.registry = registry;
+        atomicLong = new AtomicLong();
     }
 
     @Override
@@ -81,7 +84,7 @@ public class SftpHealthCheckRoute extends RouteBuilder {
         from(betsysOutbound + betsysSftpOptions )
                 .log("reading health file from betsys to agresso")
                     .to(agressoOutbound +  agressoSftpOptions)
-                    .process(exchange ->  registry.gauge("agresso_to_betsys_sftp_health_check", new AtomicLong()).set(System.currentTimeMillis()/ 1000))
+                    .process(exchange ->  registry.gauge("agresso_to_betsys_sftp_health_check", atomicLong).set(System.currentTimeMillis()/ 1000))
                 .end();
     }
 
