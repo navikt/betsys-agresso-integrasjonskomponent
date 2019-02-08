@@ -76,11 +76,13 @@ public class SftpHealthCheckRoute extends RouteBuilder {
         LOGGER.info("Setter opp Agresso og Betsys health check Camel-route");
 
         from(agressoOutbound +  agressoSftpOptions )
+                .log("reading health file from agresso to betsys")
                 .routeId("sftpHealthCheck")
                 .to(betsysOutbound + betsysSftpOptions)
                 .end();
 
         from(betsysOutbound + betsysSftpOptions )
+                .log("reading health file from betsys to agresso")
                     .to(agressoOutbound +  agressoSftpOptions)
                     .process(exchange ->  registry.gauge("agresso_to_betsys_sftp_health_check", new AtomicLong()).set(System.currentTimeMillis()/ 1000))
                 .end();

@@ -11,7 +11,7 @@
     <logger name="org.apache.cxf.services" level="WARN" additivity="false">
         <appender-ref ref="stdout_json"/>
     </logger>
-    <logger name="org.apache" level="WARN">
+    <logger name="org.apache" level="DEBUG">
         <appender-ref ref="stdout_json"/>
     </logger>
 
