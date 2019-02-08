@@ -61,7 +61,7 @@ public class SftpHealthCheckRoute extends RouteBuilder {
         final String betsysSftpOptions =
                 "?throwExceptionOnConnectFailed=true" +
                         "&maxMessagesPerPoll=1" +
-                        "&delay=15s" +
+                        "&delay=1m" +
                         "&delete=true" +
                         "&knownHostsFile=" + vaultPath + "/known_hosts" +
                         "&privateKeyFile=" + vaultPath + "/betsysKey" +
