@@ -52,7 +52,7 @@ public class SftpHealthCheckRoute extends RouteBuilder {
     public void configure() {
         final String agressoSftpOptions =
                 "?maxMessagesPerPoll=1" +
-                        "throwExceptionOnConnectFailed=true" +
+                        "&throwExceptionOnConnectFailed=true" +
                         "&initialDelay=15000" +
                         "&delay=15000" +
                         "&delete=true" +
