@@ -13,6 +13,7 @@ alerts:
     severity: Error
 - alert: errorDetected
   expr: time() - agresso_to_betsys_sftp_health_check > 180
+  for: 1m
   annotations:
     action: Sftp health check failed
     severity: Error
