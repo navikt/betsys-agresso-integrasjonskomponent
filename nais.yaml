@@ -11,7 +11,7 @@ alerts:
   annotations:
     action: Read app logs(application:betsys-agresso-integrasjonskomponent).
     severity: Error
-- alert: errorDetected
+- alert: sftpHealthError
   expr: time() - agresso_to_betsys_sftp_health_check > 180
   for: 1m
   annotations:
