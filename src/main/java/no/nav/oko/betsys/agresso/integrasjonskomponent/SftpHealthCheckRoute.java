@@ -1,9 +1,12 @@
 package no.nav.oko.betsys.agresso.integrasjonskomponent;
 
 import io.micrometer.core.instrument.MeterRegistry;
+import org.apache.camel.Exchange;
+import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -42,12 +45,15 @@ public class SftpHealthCheckRoute extends RouteBuilder {
     @Value("${bankReceiver}")
     private String receiver;
 
+    private ProducerTemplate template;
+
     private MeterRegistry registry;
 
     private AtomicLong atomicLong;
 
-    public SftpHealthCheckRoute(MeterRegistry registry){
+    public SftpHealthCheckRoute(MeterRegistry registry, ProducerTemplate template){
         this.registry = registry;
+        this.template = template;
         atomicLong = new AtomicLong();
     }
 
@@ -84,6 +90,12 @@ public class SftpHealthCheckRoute extends RouteBuilder {
                     .to(agressoOutbound +  agressoSftpOptions)
                     .process(exchange ->  registry.gauge("agresso_to_betsys_sftp_health_check", atomicLong).set(System.currentTimeMillis()/ 1000))
                 .end();
+
+
+        LOGGER.info("Sender oppstartsfil");
+        template.sendBodyAndHeader("sftpHealthCheck",
+                "health check", Exchange.FILE_NAME, "healthCheck");
+
     }
 
 }

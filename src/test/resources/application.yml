@@ -14,11 +14,4 @@ camel:
 
 optConfig: test
 
-#SFTPUSERNAME: admin
-#SFTPPASSWORD: admin
-#SFTPSERVERURL: 127.0.0.33
-#BETSYSSERVERURL: 127.0.0.44
-#BETSYSUSERNAME: admin
-#BETSYSPASSWORD: admin
-
 vaultPath: ./target/test-classes
