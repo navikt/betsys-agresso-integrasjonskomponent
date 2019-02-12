@@ -79,8 +79,11 @@ public class SftpHealthCheckRoute extends RouteBuilder {
         final String agressoOutbound = "sftp://" + agressoSftpUser + "@" + agressoSftpPath + "/outbound/.health";
         final String betsysOutbound = "sftp://" + betsysSftpUser + "@" + betsysSftpPath + "/outbound/.health";
 
-        LOGGER.info("Setter opp Agresso og Betsys health check Camel-route");
+        LOGGER.info("Sender oppstartsfil");
+        template.sendBodyAndHeader(agressoOutbound +  agressoSftpOptions,
+                "health check", Exchange.FILE_NAME, "healthCheck");
 
+        LOGGER.info("Setter opp Agresso og Betsys health check Camel-route");
         from(agressoOutbound +  agressoSftpOptions )
                 .routeId("sftpHealthCheck")
                 .to(betsysOutbound + betsysSftpOptions)
@@ -92,9 +95,6 @@ public class SftpHealthCheckRoute extends RouteBuilder {
                 .end();
 
 
-        LOGGER.info("Sender oppstartsfil");
-        template.sendBodyAndHeader(agressoOutbound +  agressoSftpOptions,
-                "health check", Exchange.FILE_NAME, "healthCheck");
 
     }
 
