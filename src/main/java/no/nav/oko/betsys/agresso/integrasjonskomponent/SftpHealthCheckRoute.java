@@ -93,7 +93,7 @@ public class SftpHealthCheckRoute extends RouteBuilder {
 
 
         LOGGER.info("Sender oppstartsfil");
-        template.sendBodyAndHeader("sftpHealthCheck",
+        template.sendBodyAndHeader(agressoOutbound +  agressoSftpOptions,
                 "health check", Exchange.FILE_NAME, "healthCheck");
 
     }
