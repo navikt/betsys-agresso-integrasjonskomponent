@@ -1,6 +1,6 @@
 package no.nav.oko.betsys.agresso.integrasjonskomponent;
 
-import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.spring.SpringRouteBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class BetsysTilAgressoRoute extends RouteBuilder {
+public class BetsysTilAgressoRoute extends SpringRouteBuilder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BetsysTilAgressoRoute.class);
 

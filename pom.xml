@@ -10,17 +10,12 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <prometheus.version>0.5.0</prometheus.version>
         <logback.version>1.2.3</logback.version>
         <junit.version>4.12</junit.version>
-        <camel.version>2.22.1</camel.version>
+        <camel.version>2.23.1</camel.version>
         <wmq.version>7.0</wmq.version>
         <maven.surefire.plugin.version>2.19.1</maven.surefire.plugin.version>
-        <activemq-version>5.15.4</activemq-version>
-        <activemq-junit-version>5.15.4</activemq-junit-version>
-        <awaitility.version>3.1.0</awaitility.version>
         <iso20022-sbdh-version>13.0.10</iso20022-sbdh-version>
-        <sshd-core-version>1.7.0</sshd-core-version>
         <slf4j-version>1.7.25</slf4j-version>
     </properties>
 
@@ -104,11 +99,6 @@
             <artifactId>camel-spring-boot-starter</artifactId>
             <version>${camel.version}</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.apache.camel</groupId>-->
-            <!--<artifactId>camel-core</artifactId>-->
-            <!--<version>${camel.version}</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-ftp-starter</artifactId>
@@ -139,54 +129,17 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-test-spring</artifactId>
             <version>${camel.version}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <!--<dependency>-->
-            <!--<groupId>org.awaitility</groupId>-->
-            <!--<artifactId>awaitility</artifactId>-->
-            <!--<version>${awaitility.version}</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>org.apache.sshd</groupId>-->
-            <!--<artifactId>sshd-core</artifactId>-->
-            <!--<version>${sshd-core-version}</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>org.apache.activemq.tooling</groupId>-->
-            <!--<artifactId>activemq-junit</artifactId>-->
-            <!--<version>${activemq-junit-version}</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>org.apache.activemq</groupId>-->
-            <!--<artifactId>activemq-broker</artifactId>-->
-            <!--<version>${activemq-version}</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.activemq</groupId>-->
-            <!--<artifactId>activemq-client</artifactId>-->
-            <!--<version>${activemq-version}</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-
     </dependencies>
 
     <build>
