@@ -62,7 +62,7 @@ public class SftpHealthCheckRoute extends SpringRouteBuilder {
                 "?maxMessagesPerPoll=1" +
                         "&throwExceptionOnConnectFailed=true" +
                         "&delete=true" +
-                        "s&strictHostKeyChecking=yes" +
+                        "&strictHostKeyChecking=yes" +
                         "&knownHostsFile=" + vaultPath + "/known_hosts" +
                         "&privateKeyFile=" + vaultPath + "/betsysKey" +
                         "&privateKeyPassphrase=" + betsysKeyPassphrase;
@@ -72,7 +72,7 @@ public class SftpHealthCheckRoute extends SpringRouteBuilder {
                         "&maxMessagesPerPoll=1" +
                         "&delay=1m" +
                         "&delete=true" +
-                        "s&strictHostKeyChecking=yes" +
+                        "&strictHostKeyChecking=yes" +
                         "&knownHostsFile=" + vaultPath + "/known_hosts" +
                         "&privateKeyFile=" + vaultPath + "/betsysKey" +
                         "&privateKeyPassphrase=" + agressoKeyPassphrase;
