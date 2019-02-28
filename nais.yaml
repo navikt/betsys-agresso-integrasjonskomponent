@@ -7,13 +7,13 @@ port: 8080
 alerts:
 - alert: errorDetected
   expr: increase(logd_messages_total{app="nais-logd",log_app="betsys-agresso-integrasjonskomponent",log_level="Error"}[5m]) > 0
-  for: 2m
+  for: 10m
   annotations:
     action: Read app logs(application:betsys-agresso-integrasjonskomponent).
     severity: Error
 - alert: sftpHealthError
   expr: time() - agresso_to_betsys_sftp_health_check > 180
-  for: 1m
+  for: 5m
   annotations:
     action: Sftp health check failed
     severity: Error
