@@ -14,6 +14,10 @@
     <logger name="org.apache" level="WARN">
         <appender-ref ref="stdout_json"/>
     </logger>
+    <logger name="com.jcraft" level="DEBUG">
+        <appender-ref ref="stdout_json"/>
+    </logger>
+
 
     <root level="INFO">
         <appender-ref ref="stdout_json"/>
