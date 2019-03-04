@@ -51,12 +51,14 @@ public class AgressoTilBetsysRoute extends SpringRouteBuilder {
                 "&readLock=changed" +
                 "&bridgeErrorHandler=true" +
                 "&strictHostKeyChecking=yes" +
+                        "&jschLoggingLevel=DEBUG" +
                 "&knownHostsFile=" + vaultPath + "/known_hosts" +
                 "&privateKeyFile=" + vaultPath + "/betsysKey" +
                 "&privateKeyPassphrase=" + betsysKeyPassphrase;
 
         final String betsysSftpOptions =
                 "?throwExceptionOnConnectFailed=true" +
+                        "&jschLoggingLevel=DEBUG" +
                 "&strictHostKeyChecking=yes" +
                 "&knownHostsFile=" + vaultPath + "/known_hosts" +
                 "&privateKeyFile=" + vaultPath + "/betsysKey" +

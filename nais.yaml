@@ -27,7 +27,7 @@ healthcheck:
     periodSeconds: 5
     failureThreshold: 30
   readiness:
-    path: /actuator/health
+    path: /actuator/info
     initialDelay: 30
     periodSeconds: 5
     failureThreshold: 30
