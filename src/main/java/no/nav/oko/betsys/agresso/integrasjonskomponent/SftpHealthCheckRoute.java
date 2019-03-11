@@ -50,7 +50,7 @@ public class SftpHealthCheckRoute extends SpringRouteBuilder {
                 .to(sftpConfig.sftpHealthCheckRouteAgressoSftp())
                 .process(exchange ->
                         Objects.requireNonNull(registry.gauge("agresso_to_betsys_sftp_health_check", atomicLong))
-                        .set(System.currentTimeMillis() / 1000))
+                                .set(System.currentTimeMillis() / 1000))
                 .end();
     }
 
