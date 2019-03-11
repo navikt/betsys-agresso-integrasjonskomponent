@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
@@ -47,7 +48,9 @@ public class SftpHealthCheckRoute extends SpringRouteBuilder {
 
         from(sftpConfig.sftpHealthCheckRouteBetsysSftp())
                 .to(sftpConfig.sftpHealthCheckRouteAgressoSftp())
-                .process(exchange -> registry.gauge("agresso_to_betsys_sftp_health_check", atomicLong).set(System.currentTimeMillis() / 1000))
+                .process(exchange ->
+                        Objects.requireNonNull(registry.gauge("agresso_to_betsys_sftp_health_check", atomicLong))
+                        .set(System.currentTimeMillis() / 1000))
                 .end();
     }
 

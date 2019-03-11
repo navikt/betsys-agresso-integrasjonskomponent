@@ -36,10 +36,12 @@ public class AgressoTilBetsysRoute extends SpringRouteBuilder {
                 .log("Lest fil med navn: ${header.CamelFileNameOnly} fra Agresso")
                 .to(MICROMETER_TIMER + "?action=start")
                 .to("validator:file:pain.001.001.03.xsd")
-                .setHeader(Exchange.FILE_NAME, header(Exchange.FILE_NAME).regexReplaceAll("(.*)\\.lis$", "$1.xml").getExpression())
+                .setHeader(Exchange.FILE_NAME, header(Exchange.FILE_NAME)
+                        .regexReplaceAll("(.*)\\.lis$", "$1.xml").getExpression())
                 .to(sftpConfig.agressoTilBetsysBetsysSftp()).id("toBetsysServer")
                 .process(exchange -> {
-                            String filename = exchange.getIn().getHeader("CamelFileNameOnly", String.class).replace(".lis", "");
+                            String filename = exchange.getIn().getHeader("CamelFileNameOnly", String.class)
+                                    .replace(".lis", "");
                             exchange.getOut().setBody(
                                     SbdhService.opprettStringSBDH(SbdhType.PAIN001, filename, sender, receiver));
                             exchange.getOut().setHeader("CamelFileNameOnly", filename);
