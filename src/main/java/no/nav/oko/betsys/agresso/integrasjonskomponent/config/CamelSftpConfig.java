@@ -12,11 +12,17 @@ public class CamelSftpConfig {
     @Value("${agressoKeyPassphrase}")
     private String agressoKeyPassphrase;
 
-    @Value("${agressoSftpPath}")
-    private String agressoSftpPath;
+    @Value("${agressoTilBetsysRouteAgressoSftpPath}")
+    private String agressoTilBetsysRouteAgressoSftpPath;
 
-    @Value("${betsysSftpPath}")
-    private String betsysSftpPath;
+    @Value("${agressoTilBetsysRouteBetsysSftpPath}")
+    private String agressoTilBetsysRouteBetsysSftpPath;
+
+    @Value("${betsysTilAgressoRouteAgressoSftpPath}")
+    private String betsysTilAgressoRouteAgressoSftpPath;
+
+    @Value("${betsysTilAgressoRouteBetsysSftpPath}")
+    private String betsysTilAgressoRouteBetsysSftpPath;
 
     @Value("${betsysSftpUser}")
     private String betsysSftpUser;
@@ -28,13 +34,13 @@ public class CamelSftpConfig {
     private String vaultPath;
 
     public String agressoTilBetsysAgressoSftp() {
-        String agressoOutbound = "sftp://" + agressoSftpUser + "@" + agressoSftpPath + "/outbound";
+        String agressoOutbound = "sftp://" + agressoSftpUser + "@" + agressoTilBetsysRouteAgressoSftpPath;
         CamelParams agressoParams = new CamelParams();
         setupSecurity(agressoParams);
         agressoParams.addParam("initialDelay=15000");
         agressoParams.addParam("maxMessagesPerPoll=1");
         agressoParams.addParam("delay=15000");
-        agressoParams.addParam("move=Arkiv");
+        agressoParams.addParam("delete=true");
         agressoParams.addParam("readLock=changed");
         agressoParams.addParam("bridgeErrorHandler=true");
         agressoParams.addParam("stepwise=false");
@@ -42,7 +48,7 @@ public class CamelSftpConfig {
     }
 
     public String agressoTilBetsysBetsysSftp() {
-        String betsysOutbound = "sftp://" + betsysSftpUser + "@" + betsysSftpPath + "/outbound";
+        String betsysOutbound = "sftp://" + betsysSftpUser + "@" +agressoTilBetsysRouteBetsysSftpPath;
         CamelParams betsysParams = new CamelParams();
         setupSecurity(betsysParams);
         betsysParams.addParam("throwExceptionOnConnectFailed=true");
@@ -51,14 +57,14 @@ public class CamelSftpConfig {
     }
 
     public String betsysTilAgressoAgressoSftp() {
-        String agressoInbound = "sftp://" + agressoSftpUser + "@" + agressoSftpPath + "/inbound";
+        String agressoInbound = "sftp://" + agressoSftpUser + "@" + betsysTilAgressoRouteAgressoSftpPath;
         CamelParams agressoParams = new CamelParams();
         setupSecurity(agressoParams);
         return agressoInbound + agressoParams.getCamelParams();
     }
 
     public String betsysTilAgressoBetsysSftp() {
-        String betsysInbound = "sftp://" + betsysSftpUser + "@" + betsysSftpPath + "/inbound";
+        String betsysInbound = "sftp://" + betsysSftpUser + "@" +betsysTilAgressoRouteBetsysSftpPath;
         CamelParams betsysParams = new CamelParams();
         setupSecurity(betsysParams);
         betsysParams.addParam("throwExceptionOnConnectFailed=true");
@@ -66,7 +72,7 @@ public class CamelSftpConfig {
     }
 
     public String sftpHealthCheckRouteAgressoSftp() {
-        String agressoOutbound = "sftp://" + agressoSftpUser + "@" + agressoSftpPath + "/outbound/.health";
+        String agressoOutbound = "sftp://" + agressoSftpUser + "@" + agressoTilBetsysRouteAgressoSftpPath + "/.health";
         CamelParams agressoParams = new CamelParams();
         setupSecurity(agressoParams);
         agressoParams.addParam("maxMessagesPerPoll=1");
@@ -76,7 +82,7 @@ public class CamelSftpConfig {
     }
 
     public String sftpHealthCheckRouteBetsysSftp() {
-        String betsysOutbound = "sftp://" + betsysSftpUser + "@" + betsysSftpPath + "/outbound/.health";
+        String betsysOutbound = "sftp://" + betsysSftpUser + "@" + agressoTilBetsysRouteBetsysSftpPath +"/.health";
         CamelParams betsysParams = new CamelParams();
         setupSecurity(betsysParams);
         betsysParams.addParam("throwExceptionOnConnectFailed=true");
