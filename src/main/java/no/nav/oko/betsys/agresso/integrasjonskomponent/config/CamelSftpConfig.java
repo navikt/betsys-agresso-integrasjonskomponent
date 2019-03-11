@@ -50,14 +50,14 @@ public class CamelSftpConfig {
         return betsysOutbound + betsysParams.getCamelParams();
     }
 
-    public String betsysTilAgressoAgressoSftp(){
-        String  agressoInbound ="sftp://" + agressoSftpUser + "@" + agressoSftpPath + "/inbound";
+    public String betsysTilAgressoAgressoSftp() {
+        String agressoInbound = "sftp://" + agressoSftpUser + "@" + agressoSftpPath + "/inbound";
         CamelParams agressoParams = new CamelParams();
         setupSecurity(agressoParams);
         return agressoInbound + agressoParams.getCamelParams();
     }
 
-    public String betsysTilAgressoBetsysSftp(){
+    public String betsysTilAgressoBetsysSftp() {
         String betsysInbound = "sftp://" + betsysSftpUser + "@" + betsysSftpPath + "/inbound";
         CamelParams betsysParams = new CamelParams();
         setupSecurity(betsysParams);

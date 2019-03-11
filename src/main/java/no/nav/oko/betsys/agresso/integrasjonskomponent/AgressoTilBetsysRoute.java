@@ -24,7 +24,7 @@ public class AgressoTilBetsysRoute extends SpringRouteBuilder {
 
     private CamelSftpConfig sftpConfig;
 
-    public AgressoTilBetsysRoute(CamelSftpConfig sftpConfig){
+    public AgressoTilBetsysRoute(CamelSftpConfig sftpConfig) {
         this.sftpConfig = sftpConfig;
     }
 
@@ -39,11 +39,11 @@ public class AgressoTilBetsysRoute extends SpringRouteBuilder {
                 .setHeader(Exchange.FILE_NAME, header(Exchange.FILE_NAME).regexReplaceAll("(.*)\\.lis$", "$1.xml").getExpression())
                 .to(sftpConfig.agressoTilBetsysBetsysSftp()).id("toBetsysServer")
                 .process(exchange -> {
-                  String filename = exchange.getIn().getHeader("CamelFileNameOnly", String.class).replace(".lis", "");
-                  exchange.getOut().setBody(
-                            SbdhService.opprettStringSBDH(SbdhType.PAIN001,filename,sender, receiver));
-                  exchange.getOut().setHeader("CamelFileNameOnly", filename);
-                    }
+                            String filename = exchange.getIn().getHeader("CamelFileNameOnly", String.class).replace(".lis", "");
+                            exchange.getOut().setBody(
+                                    SbdhService.opprettStringSBDH(SbdhType.PAIN001, filename, sender, receiver));
+                            exchange.getOut().setHeader("CamelFileNameOnly", filename);
+                        }
                 )
                 .to("ref:betsysUt").id("betsysJMS")
                 .log("Fil med navn: ${header.CamelFileNameOnly} ferdig kopiert fra Agresso til Betsys")

@@ -13,4 +13,5 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableConfigurationProperties({GatewayAlias.class})
 @Configuration
 @PropertySource("file:${vaultPath}/secrets.properties")
-public class AgressoBetsysConfig {}
+public class AgressoBetsysConfig {
+}

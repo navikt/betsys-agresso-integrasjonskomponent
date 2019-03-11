@@ -28,7 +28,7 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER
 
 @RunWith(CamelSpringBootRunner.class)
 @SpringBootTest(classes = {Integrasjonskomponent.class},
-        properties = { "camel.springboot.java-routes-include-pattern=**/BetsysTilAgressoRoute*"})
+        properties = {"camel.springboot.java-routes-include-pattern=**/BetsysTilAgressoRoute*"})
 @UseAdviceWith
 @DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
 @DisableJmx
@@ -49,7 +49,7 @@ public class BetsysTilAgressoRouteTest {
     private NotifyBuilder notify;
 
     @AfterClass
-    public static void clenup(){
+    public static void clenup() {
         deleteDirectory("target/inbound");
         deleteDirectory("target/outbound");
     }
@@ -74,11 +74,9 @@ public class BetsysTilAgressoRouteTest {
     public void sendOneFileFromBetsysToAgresso() {
         template.sendBodyAndHeader("file://target/inbound",
                 new File("target/test-classes/input/Agresso_44.lis"), Exchange.FILE_NAME, "Agresso_44.xml");
-        template.sendBody(stubJmsBetsysInn,SbdhService.opprettStringSBDH(SbdhType.PAIN001,"Agresso_44","11111111111", "22222222222"));
+        template.sendBody(stubJmsBetsysInn, SbdhService.opprettStringSBDH(SbdhType.PAIN001, "Agresso_44", "11111111111", "22222222222"));
         assertTrue("Route does not take more than 10 seconds", notify.matchesMockWaitTime());
         File target = new File("target/outbound/Agresso_44.xml");
         assertTrue("File is transferred ", target.exists());
     }
-
-
 }

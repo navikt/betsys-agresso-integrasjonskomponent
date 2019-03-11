@@ -15,7 +15,7 @@ public class BetsysTilAgressoRoute extends SpringRouteBuilder {
 
     private CamelSftpConfig sftpConfig;
 
-    public BetsysTilAgressoRoute(CamelSftpConfig sftpConfig){
+    public BetsysTilAgressoRoute(CamelSftpConfig sftpConfig) {
         this.sftpConfig = sftpConfig;
     }
 
@@ -25,14 +25,14 @@ public class BetsysTilAgressoRoute extends SpringRouteBuilder {
 
         from("ref:betsysInn")
                 .routeId("KopierFilFraBetsys")
-                .to( MICROMETER_TIMER + "?action=start")
+                .to(MICROMETER_TIMER + "?action=start")
                 .split(xpath("//n:DocumentIdentification/n:InstanceIdentifier/text()")
                         .namespace("n", "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader"))
                 .log("Forsøker å lese fil med navn: ${body} fra Betsys til Agresso")
                 .pollEnrich().simple(sftpConfig.betsysTilAgressoBetsysSftp() + "&fileName=${body}" + ".xml").timeout(10000).id("fromBetsysServer")
                 .to(sftpConfig.betsysTilAgressoAgressoSftp()).id("toAgressoServer")
                 .log("Fil med navn:  ${header.CamelFileNameOnly} ferdig kopiert fra Betsys til Agresso")
-                .to(MICROMETER_TIMER +"?action=stop")
+                .to(MICROMETER_TIMER + "?action=stop")
                 .to("micrometer:counter:betsys.to.agresso.total.counter")
                 .end();
     }

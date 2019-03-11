@@ -25,7 +25,7 @@ public class SftpHealthCheckRoute extends SpringRouteBuilder {
 
     private CamelSftpConfig sftpConfig;
 
-    public SftpHealthCheckRoute(MeterRegistry registry, ProducerTemplate template, CamelSftpConfig sftpConfig){
+    public SftpHealthCheckRoute(MeterRegistry registry, ProducerTemplate template, CamelSftpConfig sftpConfig) {
         this.registry = registry;
         this.template = template;
         atomicLong = new AtomicLong();
@@ -39,21 +39,16 @@ public class SftpHealthCheckRoute extends SpringRouteBuilder {
         template.sendBodyAndHeader(sftpConfig.sftpHealthCheckRouteAgressoSftp(),
                 "health check", Exchange.FILE_NAME, "healthCheck");
 
-
         LOGGER.info("Setter opp Agresso og Betsys health check Camel-route");
         from(sftpConfig.sftpHealthCheckRouteAgressoSftp())
                 .routeId("sftpHealthCheck")
                 .to(sftpConfig.sftpHealthCheckRouteBetsysSftp())
                 .end();
 
-
         from(sftpConfig.sftpHealthCheckRouteBetsysSftp())
                 .to(sftpConfig.sftpHealthCheckRouteAgressoSftp())
-                .process(exchange ->  registry.gauge("agresso_to_betsys_sftp_health_check", atomicLong).set(System.currentTimeMillis()/ 1000))
+                .process(exchange -> registry.gauge("agresso_to_betsys_sftp_health_check", atomicLong).set(System.currentTimeMillis() / 1000))
                 .end();
-
-
-
     }
 
 }
