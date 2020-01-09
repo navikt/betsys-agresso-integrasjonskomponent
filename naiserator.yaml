@@ -1,0 +1,58 @@
+kind: Application
+apiVersion: nais.io/v1alpha1
+metadata:
+  name: betsys-agresso-integrasjonskomponent
+  namespace: default
+  labels:
+    team: okonomi
+spec:
+  env:
+  - name: MQGATEWAY01_HOSTNAME
+    value: b27apvl172.preprod.local
+  - name: MQGATEWAY01_PORT
+    value: "1413"
+  - name: MQGATEWAY01_NAME
+    value: MQ1LSC01
+  - name: BETSYS_CHANNEL_QUEUEMANAGER
+    value: mq://b27apvl172.preprod.local:1413/MQ1LSC01
+  - name: CHANNELNAME
+    value: Q1_BETSYS
+  - name: SENDING_TIL_AGRESSO_QUEUE
+    value: QA.Q1_BETSYS.SENDING_TIL_AGRESSO
+  - name: BETSYS_SENDING_TIL_AGRESSO_QUEUEMANAGER
+    value: mq://b27apvl172.preprod.local:1413/MQ1LSC01
+  - name: SENDING_TIL_BANK_QUEUE
+    value: QA.Q1_BETSYS.SENDING_TIL_BANK
+  - name: BETSYS_SENDING_TIL_BANK_QUEUEMANAGER
+    value: mq://b27apvl172.preprod.local:1413/MQ1LSC01
+  image: {{ image }}
+  ingresses:
+  - https://betsys-agresso-integrasjonskomponent.nais.preprod.local
+  liveness:
+    path: /actuator/info
+    port: 8080
+    initialDelay: 30
+    periodSeconds: 5
+    failureThreshold: 30
+  port: 8080
+  prometheus:
+    enabled: true
+    path: /actuator/prometheus
+  readiness:
+    path: /actuator/info
+    port: 8080
+    initialDelay: 30
+    periodSeconds: 5
+    failureThreshold: 30
+  replicas:
+    min: 1
+    max: 1
+  resources:
+    limits:
+      cpu: 4000m
+      memory: 4Gi
+    requests:
+      cpu: 1000m
+      memory: 1Gi
+  vault:
+    enabled: true
