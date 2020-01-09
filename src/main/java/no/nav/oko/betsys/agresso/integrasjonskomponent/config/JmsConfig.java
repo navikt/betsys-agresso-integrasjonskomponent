@@ -3,7 +3,7 @@ package no.nav.oko.betsys.agresso.integrasjonskomponent.config;
 import com.ibm.mq.jms.MQConnectionFactory;
 import com.ibm.mq.jms.MQQueue;
 import com.ibm.msg.client.wmq.WMQConstants;
-import com.ibm.msg.client.wmq.v6.base.internal.MQC;
+import com.ibm.msg.client.wmq.compat.base.internal.MQC;
 import org.apache.camel.component.jms.JmsConfiguration;
 import org.apache.camel.component.jms.JmsEndpoint;
 import org.springframework.beans.factory.annotation.Value;

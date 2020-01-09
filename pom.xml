@@ -15,8 +15,9 @@
         <camel.version>2.23.1</camel.version>
         <wmq.version>7.0</wmq.version>
         <maven.surefire.plugin.version>2.19.1</maven.surefire.plugin.version>
-        <iso20022-sbdh-version>13.0.10</iso20022-sbdh-version>
         <slf4j-version>1.7.25</slf4j-version>
+        <!--Difi-->
+        <difi.sbdh.version>0.9.5</difi.sbdh.version>
     </properties>
 
     <parent>
@@ -49,18 +50,17 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
-        <!-- NAV -->
         <dependency>
-            <groupId>iso20022</groupId>
-            <artifactId>iso20022-sbdh</artifactId>
-            <version>${iso20022-sbdh-version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-simple</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-oxm</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>no.difi.commons</groupId>
+            <artifactId>commons-sbdh</artifactId>
+            <version>${difi.sbdh.version}</version>
+        </dependency>
+
 
         <!-- Monitoring -->
         <dependency>
@@ -70,28 +70,11 @@
 
         <!-- IBM -->
         <dependency>
-            <groupId>com.ibm</groupId>
-            <artifactId>com.ibm.mq</artifactId>
-            <version>${wmq.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.ibm</groupId>
-            <artifactId>com.ibm.mqjms</artifactId>
-            <version>${wmq.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.ibm</groupId>
-            <artifactId>dhbcore</artifactId>
-            <version>${wmq.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
             <groupId>com.ibm.mq</groupId>
-            <artifactId>jmqi</artifactId>
-            <version>${wmq.version}</version>
-            <scope>runtime</scope>
+            <artifactId>com.ibm.mq.allclient</artifactId>
+            <version>9.1.4.0</version>
         </dependency>
+
 
         <!-- Camel -->
         <dependency>

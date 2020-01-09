@@ -1,8 +1,8 @@
 package no.nav.oko.betsys.agresso.integrasjonskomponent;
 
-import no.nav.generer.sbdh.SbdhService;
-import no.nav.generer.sbdh.generer.SbdhType;
 import no.nav.oko.betsys.agresso.integrasjonskomponent.config.CamelSftpConfig;
+import no.nav.oko.sbdh.SbdhService;
+import no.nav.oko.sbdh.generer.SbdhType;
 import org.apache.camel.Exchange;
 import org.apache.camel.spring.SpringRouteBuilder;
 import org.slf4j.Logger;

@@ -1,13 +1,14 @@
 package no.nav.oko.betsys.agresso.integrasjonskomponent;
 
 import io.micrometer.core.instrument.MeterRegistry;
-import no.nav.generer.sbdh.SbdhService;
-import no.nav.generer.sbdh.generer.SbdhType;
-import org.apache.camel.*;
+import no.nav.oko.sbdh.SbdhService;
+import no.nav.oko.sbdh.generer.SbdhType;
+import org.apache.camel.CamelContext;
+import org.apache.camel.EndpointInject;
+import org.apache.camel.Exchange;
+import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.AdviceWithRouteBuilder;
 import org.apache.camel.builder.NotifyBuilder;
-import org.apache.camel.component.mock.MockEndpoint;
-import org.apache.camel.component.stub.StubConsumer;
 import org.apache.camel.component.stub.StubEndpoint;
 import org.apache.camel.test.spring.CamelSpringBootRunner;
 import org.apache.camel.test.spring.DisableJmx;
