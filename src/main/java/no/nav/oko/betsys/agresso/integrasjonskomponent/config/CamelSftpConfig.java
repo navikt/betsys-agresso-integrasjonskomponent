@@ -87,7 +87,7 @@ public class CamelSftpConfig {
         setupSecurity(betsysParams);
         betsysParams.addParam("throwExceptionOnConnectFailed=true");
         betsysParams.addParam("maxMessagesPerPoll=1");
-        betsysParams.addParam("delay=1m");
+        betsysParams.addParam("delay=5m");
         betsysParams.addParam("delete=true");
         return betsysOutbound + betsysParams.getCamelParams();
     }
